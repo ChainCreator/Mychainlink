@@ -139,7 +139,7 @@ textarea{resize:vertical;min-height:80px}
 .cam-preview{position:absolute;inset:0;background:rgba(28,28,28,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:20}
 .cam-preview.on{display:flex}
 .cam-preview img{max-width:90%;max-height:60vh;border-radius:16px;object-fit:contain;margin-bottom:20px}
-.cam-cap-row{display:flex;gap:12px;width:100%;max-width:320px}
+.cam-cap-row{display:flex;gap:8px;width:100%;max-width:600px;align-items:center}
 
 /* PROFILE */
 .phead{text-align:center;padding:30px 16px;background:linear-gradient(180deg,rgba(232,213,116,0.08),transparent);border-radius:0 0 24px 24px;margin:-16px -16px 16px}
