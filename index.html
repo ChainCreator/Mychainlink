@@ -728,9 +728,9 @@ function svb(){localStorage.setItem('cl_blocks',JSON.stringify(blocks))}
 function svc(){localStorage.setItem('cl_conv',JSON.stringify(conversations))}
 
 // ==================== AUTH ====================
-window.swt=function(t){['in','up'].forEach(function(x){$('form-'+x).classList.remove('a');$('tab-'+x).classList.remove('a')});$('form-'+t).classList.add('a');$('tab-'+t).classList.add('a');['li-er','su-er'].forEach(function(x){var el=$(x);if(el)el.classList.remove('show')})};
-window.showForgot=function(){$('form-in').classList.remove('a');$('form-fg').classList.add('a')};
-window.showLogin=function(){$('form-fg').classList.remove('a');$('form-in').classList.add('a')};
+window.swt=function(t){['in','up','fg'].forEach(function(x){var f=$('form-'+x);if(f)f.classList.remove('a');var tab=$('tab-'+x);if(tab)tab.classList.remove('a')});$('form-'+t).classList.add('a');$('tab-'+t).classList.add('a');['li-er','su-er','fg-er'].forEach(function(x){var el=$(x);if(el)el.classList.remove('show')})};
+window.showForgot=function(){$('form-in').classList.remove('a');$('form-up').classList.remove('a');$('tab-in').classList.remove('a');$('tab-up').classList.remove('a');$('form-fg').classList.add('a')};
+window.showLogin=function(){$('form-fg').classList.remove('a');$('form-up').classList.remove('a');$('tab-up').classList.remove('a');$('form-in').classList.add('a');$('tab-in').classList.add('a')};
 window.showTerms=function(){$('m-terms').classList.add('on')};
 window.showHarassment=function(){$('m-harass').classList.add('on')};
 window.closeModal=function(id){$(id).classList.remove('on')};window.pendingLoginUser=null;window.showTwoFactorModal=function(){$('fa-code').value='';$('fa-er').classList.remove('show');$('m-2fa').classList.add('on')};window.verify2FA=function(){var code=$('fa-code').value.trim();if(!code){$('fa-er').textContent='Enter your PIN';$('fa-er').classList.add('show');return}if(!window.pendingLoginUser){closeModal('m-2fa');return}if(window.pendingLoginUser.twoFactorPIN!==code){$('fa-er').textContent='Invalid PIN';$('fa-er').classList.add('show');return}$('fa-er').classList.remove('show');cu=syncLocalUserToCu(window.pendingLoginUser);svu();window.pendingLoginUser=null;closeModal('m-2fa');showApp();showToast('Signed in (2FA verified)');};
