@@ -200,7 +200,7 @@
         <div class="pstat"><div class="n" id="p-sp">0</div><div class="l">Posts</div></div>
         <div class="pstat" style="cursor:pointer" onclick="showFollowers()"><div class="n" id="p-fl">0</div><div class="l">Connects</div></div>
         <div class="pstat" style="cursor:pointer" onclick="showFollowing()"><div class="n" id="p-fg">0</div><div class="l">Connected to</div></div>
-        <div class="pstat"><div class="n" id="p-sb">0</div><div class="l">Subscribers</div></div>
+        <div class="pstat"><div class="n" id="p-premium" style="display:none">⭐</div><div class="l">Premium</div></div>
       </div>
       <div id="p-self-actions" style="display:flex;gap:10px;justify-content:center;margin-top:12px">
         <button class="btn btn-outline btn-sm" onclick="navTo('settings')">
@@ -295,37 +295,44 @@
 
     <div class="s-group">
       <h3 style="color:#E8D574">Premium Features ($4.99/month)</h3>
+      <p style="font-size:14px;color:#888;padding:0 8px;margin-bottom:12px">Unlock the full creator toolkit. Be a creator, not just a viewer.</p>
       <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <span class="sl" style="font-weight:700">📹 Video Chat</span>
-        <span style="font-size:13px;color:#888">One-on-one encrypted video calls with other premium users. Free users can receive calls but can only initiate with premium.</span>
+        <span class="sl" style="font-weight:700">🔒 Lock Your Content</span>
+        <span style="font-size:13px;color:#888">Set your own price. Lock your entire profile or individual posts. Free users see a preview; paying fans unlock the full content. You choose the price — $1, $5, $20, whatever fits your content.</span>
       </div>
       <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <span class="sl" style="font-weight:700">📸 Camera-Only Media in DMs</span>
+        <span class="sl" style="font-weight:700">⭐ Premium Badge</span>
+        <span style="font-size:13px;color:#888">Gold badge next to your name everywhere. Signals you're a creator and your content is worth paying for.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">📹 Video Chat</span>
+        <span style="font-size:13px;color:#888">One-on-one encrypted video calls with other premium users. Free users can receive calls but only premium can initiate.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">📸 Camera-Only DMs</span>
         <span style="font-size:13px;color:#888">Send real-time camera snaps and video messages in chat — no gallery uploads, authentic only. Premium exclusive.</span>
       </div>
       <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
         <span class="sl" style="font-weight:700">🔴 Go Live</span>
-        <span style="font-size:13px;color:#888">Stream live to your connects with real-time chat and viewer counts. Premium creators only.</span>
-      </div>
-      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <span class="sl" style="font-weight:700">⭐ Premium Badge</span>
-        <span style="font-size:13px;color:#888">Gold star next to your name everywhere. Everyone sees you're a supporter.</span>
+        <span style="font-size:13px;color:#888">Stream live to your connects with real-time chat and viewer counts. Premium only. Lock your livestream behind your paywall if you want.</span>
       </div>
     </div>
 
     <div class="s-group">
-      <h3 style="color:#E8D574">Why This Model?</h3>
-      <p style="font-size:14px;color:#888;padding:0 8px">
-        Basic connection is free — no paywall on friendship. But premium features cost money to run (video servers, bandwidth, storage). $4.99/month covers those costs and keeps the platform running. Creators who bring subscribers get a direct cut.
-      </p>
+      <h3 style="color:#E8D574">How You Earn</h3>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">💰 You Set the Price</span>
+        <span style="font-size:13px;color:#888">Not a fixed $4.99. You choose what your content is worth. $2 for a photo set, $10 for a video, $50 for a livestream — whatever. You keep ~90% after PayPal fees. No platform cut.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">🎯 Direct Payout</span>
+        <span style="font-size:13px;color:#888">Payments go straight to your PayPal. No monthly threshold. No waiting period. Instant when someone unlocks your content.</span>
+      </div>
     </div>
 
     <div class="s-group">
-      <h3 style="color:#E8D574">Creator Payouts</h3>
-      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
-        <span class="sl" style="font-weight:700">💰 Direct to You</span>
-        <span style="font-size:13px;color:#888">When someone subscribes to support you, the money goes straight to your PayPal. No platform cut. You keep ~$4.55 after PayPal fees.</span>
-      </div>
+      <h3 style="color:#E8D574">Why Pay $4.99?</h3>
+      <p style="font-size:14px;color:#888;padding:0 8px">The $4.99 is just the platform fee to unlock creator tools. Think of it like buying a shop on Shopify — you pay for the store, then you set your own prices. You could earn $100 in your first day if your content connects. The $4.99 is just the cost of doing business.</p>
     </div>
 
     <div style="text-align:center;padding:20px;color:#555;font-size:13px">
@@ -352,7 +359,7 @@
         <div class="pstat"><div class="n" id="vu-sp">0</div><div class="l">Posts</div></div>
         <div class="pstat"><div class="n" id="vu-fl">0</div><div class="l">Connects</div></div>
         <div class="pstat"><div class="n" id="vu-fg">0</div><div class="l">Connected to</div></div>
-        <div class="pstat"><div class="n" id="vu-sb">0</div><div class="l">Subscribers</div></div>
+        <div class="pstat"><div class="n" id="vu-premium" style="display:none">⭐</div><div class="l">Premium</div></div>
       </div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap">
         <button class="btn btn-outline btn-sm" id="vu-fbtn" onclick="toggleFollowVU()">Connect</button>
