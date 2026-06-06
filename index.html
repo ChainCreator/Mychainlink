@@ -253,6 +253,10 @@
         <span class="sl">Subscribers-Only Posts</span>
         <div class="toggle" id="t-subonly" onclick="tSubOnly()"></div>
       </div>
+      <div class="s-item" onclick="navTo('coming-soon')">
+        <span class="sl">✨ Coming Soon</span>
+        <span class="sr" style="font-size:11px;color:#E8D574;font-weight:700">NEW</span>
+      </div>
     </div>
     <div class="s-group">
       <h3>Preferences</h3>
@@ -278,6 +282,82 @@
     </button>
   </div>
 
+  <!-- COMING SOON -->
+  <div class="page" id="pg-coming-soon">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button class="btn btn-outline btn-sm" onclick="navTo('profile')" style="width:auto">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7 7l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <h2 style="font-size:22px">✨ Coming Soon</h2>
+    </div>
+    <div class="s-group">
+      <h3 style="color:#E8D574">Creator Monetization</h3>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Monthly Subscriptions</span>
+        <span style="font-size:13px;color:#888">Let your connects pay monthly for exclusive content. PayPal payouts direct to creators.</span>
+        <span style="font-size:11px;color:#E8D574;background:rgba(232,213,116,0.1);padding:4px 10px;border-radius:12px">💰 $4.99 CAD / month</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Subscriber-Only Posts</span>
+        <span style="font-size:13px;color:#888">Lock posts behind your paywall. Only paying subscribers see your premium content.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Creator Analytics</span>
+        <span style="font-size:13px;color:#888">Track earnings, subscriber growth, engagement stats, and top-performing posts.</span>
+      </div>
+    </div>
+    <div class="s-group">
+      <h3 style="color:#E8D574">Live & Real-Time</h3>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Live Streaming</span>
+        <span style="font-size:13px;color:#888">Go live to all your connects with real-time chat, viewer counts, and replay saving.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Video Calls</span>
+        <span style="font-size:13px;color:#888">One-on-one encrypted video calls with anyone you're connected to.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Cross-Device Messaging</span>
+        <span style="font-size:13px;color:#888">Real-time DMs that sync across all your devices — not just local storage.</span>
+      </div>
+    </div>
+    <div class="s-group">
+      <h3 style="color:#E8D574">Social & Discovery</h3>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Verified Badges</span>
+        <span style="font-size:13px;color:#888">Prove you're real. Verified users get a gold checkmark on their profile.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Spotify Integration</span>
+        <span style="font-size:13px;color:#888">Embed your currently playing track or playlist directly on your profile.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Advanced Search</span>
+        <span style="font-size:13px;color:#888">Filter by location, hashtags, interests, and activity status.</span>
+      </div>
+    </div>
+    <div class="s-group">
+      <h3 style="color:#E8D574">Experience</h3>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Push Notifications</span>
+        <span style="font-size:13px;color:#888">Get notified instantly when someone connects, messages, or mentions you.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Custom Themes</span>
+        <span style="font-size:13px;color:#888">Personalize your profile with custom colors, fonts, and layouts.</span>
+      </div>
+      <div class="s-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <span class="sl" style="font-weight:700">Location Tagging</span>
+        <span style="font-size:13px;color:#888">Tag posts with your location and discover nearby users and events.</span>
+      </div>
+    </div>
+    <div style="text-align:center;padding:20px;color:#555;font-size:13px">
+      <p>Want something sooner? <a href="mailto:feedback@mychainlink.ca" style="color:#E8D574">Tell us what you need</a></p>
+      <p style="margin-top:8px;font-size:11px">MyChainLink 2026 — Building in public</p>
+    </div>
+  </div>
+
   <!-- VIEW USER -->
   <div class="page" id="pg-user">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
@@ -301,7 +381,7 @@
       <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap">
         <button class="btn btn-outline btn-sm" id="vu-fbtn" onclick="toggleFollowVU()">Connect</button>
         <button class="btn btn-outline btn-sm" onclick="navTo('messages');openThread(vu.id)">Message</button>
-        <button class="btn btn-gold btn-sm" id="vu-sbtn" onclick="openSubVU()">Subscribe for $4.99</button>
+        <button class="btn btn-gold btn-sm" id="vu-sbtn" onclick="navTo('coming-soon')">✨ Coming Soon</button>
         <button class="btn btn-outline btn-sm" id="vu-bbtn" onclick="toggleBlock()" style="border-color:#FF3366;color:#FF3366">Block</button>
       </div>
     </div>
