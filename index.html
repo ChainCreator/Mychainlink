@@ -172,6 +172,11 @@
   <div class="page" id="pg-messages">
     <div id="msg-list-view">
       <h2 style="font-size:24px;margin-bottom:16px">Messages</h2>
+      <div id="msg-premium-promo" style="display:none;background:linear-gradient(135deg,rgba(232,213,116,0.1),rgba(232,213,116,0.05));border:1px solid rgba(232,213,116,0.3);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center">
+        <div style="font-size:14px;color:#E8D574;margin-bottom:8px">📸 Premium Perk</div>
+        <div style="font-size:13px;color:#888;margin-bottom:12px">Send camera media to your connected links by becoming a Premium Link</div>
+        <button class="btn btn-gold btn-sm" onclick="navTo('coming-soon')">✨ Become Premium</button>
+      </div>
       <div class="p-list" id="conv-list"></div>
     </div>
     <div id="msg-thread-view" style="display:none;height:calc(100vh - 96px);margin:-16px;flex-direction:column">
@@ -366,6 +371,11 @@
         <button class="btn btn-outline btn-sm" onclick="navTo('messages');openThread(vu.id)">Message</button>
         <button class="btn btn-gold btn-sm" id="vu-sbtn" onclick="navTo('coming-soon')">✨ Coming Soon</button>
         <button class="btn btn-outline btn-sm" id="vu-bbtn" onclick="toggleBlock()" style="border-color:#FF3366;color:#FF3366">Block</button>
+      </div>
+      <div id="vu-premium-promo" style="display:none;background:linear-gradient(135deg,rgba(232,213,116,0.1),rgba(232,213,116,0.05));border:1px solid rgba(232,213,116,0.3);border-radius:16px;padding:16px;margin-top:16px;text-align:center">
+        <div style="font-size:14px;color:#E8D574;margin-bottom:8px">🔒 Premium Content</div>
+        <div style="font-size:13px;color:#888;margin-bottom:12px" id="vu-premium-promo-text">Become a Premium Link to watch this user's live content and unlock exclusive posts</div>
+        <button class="btn btn-gold btn-sm" onclick="navTo('coming-soon')">✨ Become Premium</button>
       </div>
     </div>
     <h3 style="font-size:16px;margin-bottom:12px">Media</h3>
