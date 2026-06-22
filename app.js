@@ -12,6 +12,14 @@ function findLocalUser(email,password){return localUsers.find(function(u){return
 function getLocalUserById(id){return localUsers.find(function(u){return u.id===id})}
 function syncLocalUserToCu(lu){return{id:lu.id,email:lu.email,user_metadata:{display_name:lu.name,handle:lu.handle,bio:lu.bio||'',avatar:lu.avatar||''}}}
 
+// ==================== FOLLOWS (SUPABASE) ====================
+var sbFollows={};
+var sbFollowers={};
+async function loadFollowsFromSupabase(){if(!sb||!supabaseOnline||!cu)return;try{var r=await sb.from('follows').select('*').eq('follower_id',cu.id);if(r.error)throw r.error;(r.data||[]).forEach(function(f){sbFollows[f.following_id]={following:true,subscribed:f.subscribed||false}})}catch(e){console.log('Follows load error',e)}}
+async function loadFollowersFromSupabase(){if(!sb||!supabaseOnline||!cu)return;try{var r=await sb.from('follows').select('*').eq('following_id',cu.id);if(r.error)throw r.error;var ids=[];(r.data||[]).forEach(function(f){ids.push(f.follower_id)});sbFollowers[cu.id]=ids}catch(e){console.log('Followers load error',e)}}
+async function saveFollowSupabase(id,state){if(!sb||!supabaseOnline||!cu)return false;if(state){var r=await sb.from('follows').insert({follower_id:cu.id,following_id:id}).select();if(r.error&&r.error.code!=='23505'){console.log('Follow insert error',r.error);return false}}else{var r2=await sb.from('follows').delete().eq('follower_id',cu.id).eq('following_id',id);if(r2.error){console.log('Follow delete error',r2.error);return false}}return true}
+async function loadAllFollows(){if(sb&&supabaseOnline&&cu){await loadFollowsFromSupabase();await loadFollowersFromSupabase();Object.keys(sbFollows).forEach(function(k){follows[k]=sbFollows[k]});var sbFl=sbFollowers[cu.id]||[];var localFl=JSON.parse(localStorage.getItem('cl_followers')||'{}');localFl[cu.id]=sbFl;localStorage.setItem('cl_followers',JSON.stringify(localFl))}else{var stored=JSON.parse(localStorage.getItem('cl_follows')||'{}');Object.keys(stored).forEach(function(k){follows[k]=stored[k]})}}
+
 // ==================== STATE ====================
 var cu=null;
 var cp='feed';
@@ -114,7 +122,7 @@ window.retake=function(){$('cam-pr').classList.remove('on');camData=''};
 window.postCam=function(){if(!camData||!cu)return;var t=$('cam-cap').value.trim();var cmtOn=$('t-post-cmt').classList.contains('on');var loc=$('cam-loc').value.trim();var p={id:uid(),uid:cu.id,un:cu.user_metadata&&cu.user_metadata.display_name?cu.user_metadata.display_name:'User',uh:cu.user_metadata&&cu.user_metadata.handle?cu.user_metadata.handle:'@user',ua:cu.user_metadata&&cu.user_metadata.avatar?cu.user_metadata.avatar:'',t:t,m:camData,v:false,ts:Date.now(),lk:[],dk:[],cm:[],c:cmtOn,subOnly:settings.subOnly,tags:'',loc:loc};posts.unshift(p);svp();closeCam();$('cam-cap').value='';$('cam-loc').value='';renderFeed();showToast('Posted!')};var editingPostId=null;window.editPost=function(id){var p=posts.find(function(x){return x.id===id});if(!p)return;editingPostId=id;$('epost-t').value=p.t||'';$('m-edit-post').classList.add('on')};window.saveEditPost=function(){if(!editingPostId)return;var p=posts.find(function(x){return x.id===editingPostId});if(!p)return;var t=$('epost-t').value.trim();if(!t){showToast('Post cannot be empty');return}p.t=t;var extractedTags=t.match(/#[a-zA-Z0-9_]+/g);if(extractedTags){var cleanExtracted=extractedTags.map(function(tag){return tag.toLowerCase()}).join(' ');p.tags=p.tags?(p.tags+' '+cleanExtracted):cleanExtracted}svp();renderFeed();closeModal('m-edit-post');editingPostId=null;showToast('Post updated!')};window.delPost=function(id){if(!confirm('Delete this post? This cannot be undone.'))return;var i=posts.findIndex(function(x){return x.id===id});if(i>-1){posts.splice(i,1);svp();renderFeed();showToast('Post deleted')}};
 
 // ==================== PROFILE ====================
-window.renderProfile=function(){if(!cu)return;var lu=localUsers.find(function(u){return u.id===cu.id});var has2FA=lu&&lu.twoFactorPIN;$('2fa-status').textContent=has2FA?'On':'Off';$('2fa-status').style.color=has2FA?'#1DB954':'#888';var myPosts=posts.filter(function(p){return p.uid===cu.id});$('p-sp').textContent=myPosts.length;var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');$('p-fl').textContent=(allFollowers[cu.id]||[]).length;$('p-fg').textContent=Object.keys(follows).filter(function(k){return follows[k]&&follows[k].following}).length;var isPremium=localStorage.getItem('cl_premium_'+cu.id);if(isPremium){$('p-premium').style.display='block'}else{$('p-premium').style.display='none'};var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('p-posts').innerHTML=h;var spLink=localStorage.getItem('cl_spotify_'+cu.id);if(spLink){$('sp-link').value=spLink;renderSpotify(spLink)}};
+window.renderProfile=function(){if(!cu)return;var lu=localUsers.find(function(u){return u.id===cu.id});var has2FA=lu&&lu.twoFactorPIN;$('2fa-status').textContent=has2FA?'On':'Off';$('2fa-status').style.color=has2FA?'#1DB954':'#888';var myPosts=posts.filter(function(p){return p.uid===cu.id});$('p-sp').textContent=myPosts.length;if(sb&&supabaseOnline&&cu){sb.from('follows').select('*').eq('following_id',cu.id).then(function(r){var count=(r.data||[]).length;$('p-fl').textContent=count}).catch(function(){$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length})}else{$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length}$('p-fg').textContent=Object.keys(follows).filter(function(k){return follows[k]&&follows[k].following}).length;var isPremium=localStorage.getItem('cl_premium_'+cu.id);if(isPremium){$('p-premium').style.display='block'}else{$('p-premium').style.display='none'};var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('p-posts').innerHTML=h;var spLink=localStorage.getItem('cl_spotify_'+cu.id);if(spLink){$('sp-link').value=spLink;renderSpotify(spLink)}};
 window.saveSpotify=function(){if(!cu)return;var link=$('sp-link').value.trim();if(!link)return;localStorage.setItem('cl_spotify_'+cu.id,link);renderSpotify(link)};
 function renderSpotify(link){if(!link)return;var embedDiv=$('sp-embed');embedDiv.innerHTML='';if(link.indexOf('open.spotify.com')>-1){var parts=link.split('/');var type=parts[parts.length-2]||'track';var id=parts[parts.length-1].split('?')[0];if(id){var url='https://open.spotify.com/embed/'+type+'/'+id;var height=type==='playlist'?'380':'80';embedDiv.innerHTML='<iframe src="'+url+'" width="100%" height="'+height+'" frameborder="0" allowtransparency="true" allow="encrypted-media" style="border-radius:8px"></iframe>'}}}window.renderSpotify=renderSpotify;
 
@@ -169,75 +177,225 @@ window.delAccount=function(){var confirm=$('del-confirm').value.trim();if(confir
 window.getUserData=function(id){if(!id)return null;if(cu&&id===cu.id)return{id:cu.id,name:cu.user_metadata&&cu.user_metadata.display_name?cu.user_metadata.display_name:'User',handle:cu.user_metadata&&cu.user_metadata.handle?cu.user_metadata.handle:'@user',avatar:cu.user_metadata&&cu.user_metadata.avatar?cu.user_metadata.avatar:'',bio:cu.user_metadata&&cu.user_metadata.bio?cu.user_metadata.bio:''};var lu=localUsers.find(function(u){return u.id===id});if(lu)return{id:lu.id,name:lu.name||lu.user_metadata&&lu.user_metadata.display_name||'User',handle:lu.handle||lu.user_metadata&&lu.user_metadata.handle||'@user',avatar:lu.avatar||lu.user_metadata&&lu.user_metadata.avatar||'',bio:lu.bio||lu.user_metadata&&lu.user_metadata.bio||''};var allUsersStore=JSON.parse(localStorage.getItem('cl_allUsers')||'[]');var fromAll=allUsersStore.find(function(u){return u.id===id});if(fromAll)return{id:fromAll.id,name:fromAll.name||fromAll.user_metadata&&fromAll.user_metadata.display_name||'User',handle:fromAll.handle||fromAll.user_metadata&&fromAll.user_metadata.handle||'@user',avatar:fromAll.avatar||fromAll.user_metadata&&fromAll.user_metadata.avatar||'',bio:fromAll.bio||fromAll.user_metadata&&fromAll.user_metadata.bio||''};var fromPost=posts.find(function(p){return p.uid===id});if(fromPost)return{id:id,name:fromPost.un||'User',handle:fromPost.uh||'@user',avatar:fromPost.ua||'',bio:''};return null};
 window.renderPeople=function(){var list=$('ppl-list');var allUsers=[];var allUsersMap={};function addUser(u){if(!u||!u.id)return;if(cu&&u.id===cu.id)return;if(allUsersMap[u.id])return;allUsersMap[u.id]=true;allUsers.push(u)}localUsers.forEach(function(u){addUser({id:u.id,name:u.name||u.user_metadata&&u.user_metadata.display_name||'User',handle:u.handle||u.user_metadata&&u.user_metadata.handle||'@user',avatar:u.avatar||u.user_metadata&&u.user_metadata.avatar||''})});posts.forEach(function(p){addUser({id:p.uid,name:p.un||'User',handle:p.uh||'@user',avatar:p.ua||''})});var allUsersStore=JSON.parse(localStorage.getItem('cl_allUsers')||'[]');allUsersStore.forEach(function(u){addUser(u)});if(!allUsers.length){list.innerHTML='<div class="empty"><h3>No people yet</h3><p>Be the first to join and invite friends!</p></div>';return}var h='';allUsers.forEach(function(u){var isBlocked=blocks.indexOf(u.id)!==-1;var isFollowing=follows[u.id]&&follows[u.id].following;var isSubbed=follows[u.id]&&follows[u.id].subscribed;h+='<div class="p-card">';h+='<div class="av">'+(u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?'))+'</div>';h+='<div class="info"><div class="n">'+esc(u.name)+'</div><div class="h">'+esc(u.handle)+'</div></div>';h+='<div class="actions">';if(!isBlocked){h+='<button class="btn btn-outline btn-sm" onclick="viewUser('+(u.id?"'"+u.id+"'":'')+')">View</button>';if(cu&&u.id!==cu.id){h+='<button class="btn btn-outline btn-sm" onclick="navTo(\'messages\');openThread('+(u.id?\"'\"+u.id+\"'\":'')+')">Message</button>';h+='<button class="btn '+(isFollowing?'btn-outline':'btn-primary')+' btn-sm" onclick="toggleFollowId('+(u.id?"'"+u.id+"'":'')+');renderPeople()">'+(isFollowing?'Disconnect':'Connect')+'</button>';}}else{h+='<span style="color:#FF3366;font-size:12px">Blocked</span>'}h+='</div>';h+='</div>'});list.innerHTML=h};
 window.schPpl=function(v){var list=$('ppl-list');if(!v.trim()){renderPeople();return}var term=v.toLowerCase();var allUsers=[];var allUsersMap={};function addUser(u){if(!u||!u.id)return;if(cu&&u.id===cu.id)return;if(allUsersMap[u.id])return;allUsersMap[u.id]=true;allUsers.push(u)}localUsers.forEach(function(u){addUser({id:u.id,name:u.name||u.user_metadata&&u.user_metadata.display_name||'User',handle:u.handle||u.user_metadata&&u.user_metadata.handle||'@user',avatar:u.avatar||u.user_metadata&&u.user_metadata.avatar||''})});posts.forEach(function(p){if(p.uid&&p.uid!==(cu&&cu.id)&&!allUsersMap[p.uid]){addUser({id:p.uid,name:p.un||'User',handle:p.uh||'@user',avatar:p.ua||''})}});var allUsersStore=JSON.parse(localStorage.getItem('cl_allUsers')||'[]');allUsersStore.forEach(function(u){addUser(u)});var filtered=allUsers.filter(function(u){return(u.name||'').toLowerCase().indexOf(term)>-1||(u.handle||'').toLowerCase().indexOf(term)>-1});if(term.indexOf('#')===0){var tagPosts=posts.filter(function(p){return p.tags&&p.tags.toLowerCase().indexOf(term)>-1});tagPosts.forEach(function(p){if(p.uid&&p.uid!==(cu&&cu.id)){var u=getUserData(p.uid);if(u)addUser(u)}});filtered=allUsers.filter(function(u){return(u.name||'').toLowerCase().indexOf(term)>-1||(u.handle||'').toLowerCase().indexOf(term)>-1||(u.tags||'').toLowerCase().indexOf(term)>-1})}if(!filtered.length){list.innerHTML='<div class="empty"><h3>No results</h3><p>No users match "'+esc(v)+'"</p></div>';return}var h='';filtered.forEach(function(u){var isFollowing=follows[u.id]&&follows[u.id].following;h+='<div class="p-card">';h+='<div class="av">'+(u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?'))+'</div>';h+='<div class="info"><div class="n">'+esc(u.name)+'</div><div class="h">'+esc(u.handle)+'</div></div>';h+='<div class="actions">';h+='<button class="btn btn-outline btn-sm" onclick="viewUser('+(u.id?"'"+u.id+"'":'')+')">View</button>';if(cu&&u.id!==cu.id){h+='<button class="btn btn-outline btn-sm" onclick="navTo(\'messages\');openThread('+(u.id?\"'\"+u.id+\"'\":'')+')">Message</button>';h+='<button class="btn '+(isFollowing?'btn-outline':'btn-primary')+' btn-sm" onclick="toggleFollowId('+(u.id?"'"+u.id+"'":'')+');schPpl(\''+v.replace(/'/g,"\\'")+'\')">'+(isFollowing?'Disconnect':'Connect')+'</button>'}h+='</div>';h+='</div>'});list.innerHTML=h};
-window.viewUser=function(id){if(!id)return;var u=getUserData(id);if(!u)return;vu=u;var isMe=cu&&u.id===cu.id;var myPosts=posts.filter(function(p){return p.uid===u.id});$('vu-av').innerHTML=u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?');$('vu-name').textContent=u.name||'User';$('vu-h').textContent=u.handle||'@user';$('vu-b').textContent=u.bio||'No bio yet';$('vu-sp').textContent=myPosts.length;var uFollowing=0;var uFollowers=0;var uSubscribers=0;localUsers.forEach(function(lu){var luFollows=JSON.parse(localStorage.getItem('cl_follows')||'{}');if(luFollows[u.id]&&luFollows[u.id].following)uFollowers++;if(luFollows[u.id]&&luFollows[u.id].subscribed)uSubscribers++});if(follows[u.id]&&follows[u.id].following)uFollowing++;$('vu-fl').textContent=uFollowers;$('vu-fg').textContent=uFollowing;var isPremium=localStorage.getItem('cl_premium_'+u.id);if(isPremium){$('vu-premium').style.display='block'}else{$('vu-premium').style.display='none'};var promo=$('vu-premium-promo');if(promo){var myPremium=localStorage.getItem('cl_premium_'+(cu?cu.id:''));if(isPremium&&!myPremium){promo.style.display='block';$('vu-premium-promo-text').textContent='Become a Premium Link to watch '+esc(u.name||'User')+'\'s live content and unlock exclusive posts'}else{promo.style.display='none'}};$('vu-fbtn').textContent=follows[u.id]&&follows[u.id].following?'Disconnect':'Connect';$('vu-bbtn').textContent=blocks.indexOf(u.id)!==-1?'Unblock':'Block';$('vu-bbtn').style.display=isMe?'none':'inline-flex';$('vu-sbtn').style.display=isMe?'none':'inline-flex';$('vu-fbtn').style.display=isMe?'none':'inline-flex';var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('vu-posts').innerHTML=h;navTo('user')};
-window.toggleFollowVU=function(){if(!cu||!vu)return;if(!follows[vu.id])follows[vu.id]={following:false,subscribed:false};follows[vu.id].following=!follows[vu.id].following;svf();var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');if(!allFollowers[vu.id])allFollowers[vu.id]=[];var myIdx=allFollowers[vu.id].indexOf(cu.id);if(follows[vu.id].following){if(myIdx===-1)allFollowers[vu.id].push(cu.id)}else{if(myIdx>-1)allFollowers[vu.id].splice(myIdx,1)}localStorage.setItem('cl_followers',JSON.stringify(allFollowers));$('vu-fbtn').textContent=follows[vu.id].following?'Disconnect':'Connect';showToast(follows[vu.id].following?'Connected!':'Disconnected')};
+window.viewUser=function(id){if(!id)return;var u=getUserData(id);if(!u)return;vu=u;var isMe=cu&&u.id===cu.id;var myPosts=posts.filter(function(p){return p.uid===u.id});$('vu-av').innerHTML=u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?');$('vu-name').textContent=u.name||'User';$('vu-h').textContent=u.handle||'@user';$('vu-b').textContent=u.bio||'No bio yet';$('vu-sp').textContent=myPosts.length;var uFollowing=0;var uFollowers=0;var uSubscribers=0;function finishViewUser(){if(follows[u.id]&&follows[u.id].following)uFollowing++;$('vu-fl').textContent=uFollowers;$('vu-fg').textContent=uFollowing;var isPremium=localStorage.getItem('cl_premium_'+u.id);if(isPremium){$('vu-premium').style.display='block'}else{$('vu-premium').style.display='none'};var promo=$('vu-premium-promo');if(promo){var myPremium=localStorage.getItem('cl_premium_'+(cu?cu.id:''));if(isPremium&&!myPremium){promo.style.display='block';$('vu-premium-promo-text').textContent='Become a Premium Link to watch '+esc(u.name||'User')+'\'s live content and unlock exclusive posts'}else{promo.style.display='none'}};$('vu-fbtn').textContent=follows[u.id]&&follows[u.id].following?'Disconnect':'Connect';$('vu-bbtn').textContent=blocks.indexOf(u.id)!==-1?'Unblock':'Block';$('vu-bbtn').style.display=isMe?'none':'inline-flex';$('vu-sbtn').style.display=isMe?'none':'inline-flex';$('vu-fbtn').style.display=isMe?'none':'inline-flex';var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('vu-posts').innerHTML=h;navTo('user')}if(sb&&supabaseOnline){sb.from('follows').select('*').eq('following_id',u.id).then(function(r){var ids=[];(r.data||[]).forEach(function(f){ids.push(f.follower_id);if(f.subscribed)uSubscribers++});uFollowers=ids.length;var localFl=JSON.parse(localStorage.getItem('cl_followers')||'{}');localFl[u.id]=ids;localStorage.setItem('cl_followers',JSON.stringify(localFl));finishViewUser()}).catch(function(){finishViewUser()})}else{finishViewUser()}};
+window.toggleFollowVU=function(){if(!cu||!vu)return;if(!follows[vu.id])follows[vu.id]={following:false,subscribed:false};follows[vu.id].following=!follows[vu.id].following;svf();saveFollowSupabase(vu.id,follows[vu.id].following);var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');if(!allFollowers[vu.id])allFollowers[vu.id]=[];var myIdx=allFollowers[vu.id].indexOf(cu.id);if(follows[vu.id].following){if(myIdx===-1)allFollowers[vu.id].push(cu.id)}else{if(myIdx>-1)allFollowers[vu.id].splice(myIdx,1)}localStorage.setItem('cl_followers',JSON.stringify(allFollowers));$('vu-fbtn').textContent=follows[vu.id].following?'Disconnect':'Connect';showToast(follows[vu.id].following?'Connected!':'Disconnected')};
 window.toggleFollow=function(){if(!cu)return};
-window.toggleFollowId=function(id){if(!cu||!id)return;if(!follows[id])follows[id]={following:false,subscribed:false};follows[id].following=!follows[id].following;svf();var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');if(!allFollowers[id])allFollowers[id]=[];var myIdx=allFollowers[id].indexOf(cu.id);if(follows[id].following){if(myIdx===-1)allFollowers[id].push(cu.id)}else{if(myIdx>-1)allFollowers[id].splice(myIdx,1)}localStorage.setItem('cl_followers',JSON.stringify(allFollowers))};
+window.toggleFollowId=function(id){if(!cu||!id)return;if(!follows[id])follows[id]={following:false,subscribed:false};follows[id].following=!follows[id].following;svf();saveFollowSupabase(id,follows[id].following);var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');if(!allFollowers[id])allFollowers[id]=[];var myIdx=allFollowers[id].indexOf(cu.id);if(follows[id].following){if(myIdx===-1)allFollowers[id].push(cu.id)}else{if(myIdx>-1)allFollowers[id].splice(myIdx,1)}localStorage.setItem('cl_followers',JSON.stringify(allFollowers))};
 window.toggleBlock=function(){if(!cu||!vu)return;var i=blocks.indexOf(vu.id);if(i>-1){blocks.splice(i,1);showToast('Unblocked');$('vu-bbtn').textContent='Block'}else{blocks.push(vu.id);showToast('Blocked');$('vu-bbtn').textContent='Unblock';if(follows[vu.id]){follows[vu.id].following=false;follows[vu.id].subscribed=false}svf()}svb()};
-window.showFollowers=function(){if(!cu)return;$('flw-t').textContent='Connects';var h='';var allFollowers=JSON.parse(localStorage.getItem('cl_followers')||'{}');var followerIds=allFollowers[cu.id]||[];if(!followerIds.length){h='<div style="text-align:center;padding:20px;color:#666">No connects yet</div>'}else{followerIds.forEach(function(id){var u=getUserData(id);if(!u)return;h+='<div class="p-card" style="margin-bottom:8px;cursor:pointer" onclick="viewUserFromModal(this)" data-uid="'+id+'">';h+='<div class="av" style="width:40px;height:40px">'+(u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?'))+'</div>';h+='<div class="info"><div class="n">'+esc(u.name)+'</div><div class="h">'+esc(u.handle)+'</div></div>';h+='</div>'})}$('flw-l').innerHTML=h;$('m-flw').classList.add('on')};
+window.showFollowers=function(){if(!cu)return;$('flw-t').textContent='Connects';var h='';function renderFollowerList(ids){if(!ids.length){h='<div style="text-align:center;padding:20px;color:#666">No connects yet</div>'}else{ids.forEach(function(id){var u=getUserData(id);if(!u)return;h+='<div class="p-card" style="margin-bottom:8px;cursor:pointer" onclick="viewUserFromModal(this)" data-uid="'+id+'">';h+='<div class="av" style="width:40px;height:40px">'+(u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?'))+'</div>';h+='<div class="info"><div class="n">'+esc(u.name)+'</div><div class="h">'+esc(u.handle)+'</div></div>';h+='</div>'})}$('flw-l').innerHTML=h;$('m-flw').classList.add('on')}if(sb&&supabaseOnline){sb.from('follows').select('*').eq('following_id',cu.id).then(function(r){var ids=[];(r.data||[]).forEach(function(f){ids.push(f.follower_id)});var localFl=JSON.parse(localStorage.getItem('cl_followers')||'{}');localFl[cu.id]=ids;localStorage.setItem('cl_followers',JSON.stringify(localFl));renderFollowerList(ids)}).catch(function(){var ids=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]);renderFollowerList(ids)})}else{var ids=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]);renderFollowerList(ids)}};
 window.viewUserFromModal=function(el){var id=el.getAttribute('data-uid');if(id){closeModal('m-flw');viewUser(id)}};window.showFollowing=function(){if(!cu)return;$('flw-t').textContent='Connected to';var h='';var followingIds=Object.keys(follows).filter(function(k){return follows[k]&&follows[k].following});if(!followingIds.length){h='<div style="text-align:center;padding:20px;color:#666">Not connected to anyone yet</div>'}else{followingIds.forEach(function(id){var u=getUserData(id);if(!u)return;h+='<div class="p-card" style="margin-bottom:8px;cursor:pointer" onclick="viewUserFromModal(this)" data-uid="'+id+'">';h+='<div class="av" style="width:40px;height:40px">'+(u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?'))+'</div>';h+='<div class="info"><div class="n">'+esc(u.name)+'</div><div class="h">'+esc(u.handle)+'</div></div>';h+='</div>'})}$('flw-l').innerHTML=h;$('m-flw').classList.add('on')};
 
 // ==================== SUBSCRIBE ====================
 window.openSubModal=function(){$('m-pp-checkout').classList.add('on');var btnContainer=$('paypal-button-container');if(btnContainer)btnContainer.innerHTML='';setTimeout(function(){processRealSub()},300)};window.openSubVU=function(){if(!vu){showToast('No user selected');return}var u=getUserData(vu.id);if(!u)return;$('sub-to-name').textContent=u.name||'Creator';$('sub-to-n').textContent=u.name||'User';$('sub-to-av').innerHTML=u.avatar?'<img src="'+u.avatar+'">':(u.name?u.name[0].toUpperCase():'?');$('m-pp-checkout').classList.add('on');var btnContainer=$('paypal-button-container');if(btnContainer)btnContainer.innerHTML='';setTimeout(function(){processRealSub()},300)};window.ppHostedButton=null;window.processRealSub=function(){if(!cu){showToast('Sign in to subscribe');return}if(!vu){showToast('No user selected');return}var creatorPaypal=localStorage.getItem('cl_paypal_email_'+vu.id);if(!creatorPaypal){showToast('This creator has not set up PayPal yet');return}if(typeof paypal==='undefined'||!paypal.HostedButtons){showToast('PayPal is loading, please wait');return}var container=$('paypal-container-8L8HY2ULYKSFL');if(!container)return;if(ppHostedButton){try{ppHostedButton.close()}catch(e){}}container.innerHTML='';ppHostedButton=paypal.HostedButtons({hostedButtonId:'8L8HY2ULYKSFL'});ppHostedButton.render('#paypal-container-8L8HY2ULYKSFL')};
 
-// ==================== GO LIVE ====================
+// ==================== LIVE STREAMING (WebRTC) ====================
+var liveStream = null;
+var liveViewers = 0;
+var liveStreamId = null;
+var liveIsBroadcaster = false;
+var liveStreamerId = null;
+var liveSignalChannel = null;
+var livePcMap = {};
+var liveViewerPc = null;
+var liveChatMsgs = [];
+var liveIceServers = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' }
+];
+
 window.goLive = async function() {
   if (!cu) { showToast('Please sign in first'); return; }
-  $('live-o').classList.add('on');
+  var isPremium = localStorage.getItem('cl_premium_' + cu.id);
+  if (!isPremium) { showToast('Premium only'); navTo('coming-soon'); return; }
   try {
     var s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
-    $('live-v').srcObject = s;
     liveStream = s;
-    liveViewers = 0;
-    liveViewerInterval = setInterval(function() {
-      liveViewers += Math.floor(Math.random() * 3);
-      $('live-viewers').textContent = liveViewers + ' viewer' + (liveViewers !== 1 ? 's' : '');
-    }, 3000);
-    liveChatInterval = setInterval(function() {
-      var chat = $('live-chat');
-      var names = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley'];
-      var msgs = ['Nice stream!', 'Heyyyy', 'Looking good', 'First!', 'Where are you?', 'Love this'];
-      var name = names[Math.floor(Math.random() * names.length)];
-      var msg = msgs[Math.floor(Math.random() * msgs.length)];
-      var div = document.createElement('div');
-      div.className = 'live-chat-msg';
-      div.innerHTML = '<b>' + esc(name) + ':</b> ' + esc(msg);
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-      if (chat.children.length > 20) chat.removeChild(chat.firstChild);
-    }, 5000);
-  } catch (e) { showToast('Camera error: ' + e.message); endLive(); }
+    liveIsBroadcaster = true;
+    if (sb && supabaseOnline) {
+      var title = (cu.user_metadata && cu.user_metadata.display_name ? cu.user_metadata.display_name : 'User') + ' is live';
+      var r = await sb.from('live_streams').insert({ user_id: cu.id, title: title, is_active: true, room_id: cu.id + '-' + Date.now() }).select().single();
+      if (!r.error && r.data) liveStreamId = r.data.id;
+    }
+    if (!liveStreamId) liveStreamId = cu.id + '-' + Date.now();
+    $('live-o').classList.add('on');
+    $('live-v').srcObject = s;
+    $('live-v').muted = true;
+    $('live-end-btn').textContent = 'End Live';
+    $('live-end-btn').style.display = 'block';
+    $('live-chat').innerHTML = '';
+    liveChatMsgs = [];
+    $('live-viewers').textContent = '0 viewers';
+    setupLiveSignalChannel(true);
+    showToast('You are LIVE');
+  } catch (e) { showToast('Camera error: ' + e.message); cleanupLive(); }
 };
-window.endLive = function() {
-  if (!confirm('End your live stream?')) return;
-  $('live-o').classList.remove('on');
-  if (liveStream) { liveStream.getTracks().forEach(function(t) { t.stop(); }); liveStream = null; }
-  if (liveViewerInterval) { clearInterval(liveViewerInterval); liveViewerInterval = null; }
-  if (liveChatInterval) { clearInterval(liveChatInterval); liveChatInterval = null; }
+
+window.watchLive = async function(streamId, streamerId, streamerName) {
+  if (!cu) { showToast('Please sign in first'); return; }
+  liveStreamId = streamId;
+  liveStreamerId = streamerId;
+  liveIsBroadcaster = false;
+  $('live-o').classList.add('on');
+  $('live-v').srcObject = null;
+  $('live-v').muted = false;
+  $('live-end-btn').textContent = 'Leave Stream';
+  $('live-end-btn').style.display = 'block';
   $('live-chat').innerHTML = '';
-  showToast('Live ended');
+  liveChatMsgs = [];
+  $('live-viewers').textContent = 'Joining...';
+  var topInfo = document.createElement('div');
+  topInfo.id = 'live-streamer-info';
+  topInfo.style.cssText = 'position:absolute;top:60px;left:16px;z-index:10;color:#fff;font-weight:700;font-size:16px;text-shadow:0 1px 4px rgba(0,0,0,0.8)';
+  topInfo.textContent = streamerName || 'Live Stream';
+  var existing = $('live-streamer-info');
+  if (existing) existing.remove();
+  $('live-o').appendChild(topInfo);
+  if (sb && supabaseOnline && streamId) {
+    sb.from('stream_viewers').upsert({ stream_id: streamId, user_id: cu.id }, { onConflict: 'stream_id,user_id' }).catch(function(){});
+  }
+  setupLiveSignalChannel(false);
+  showToast('Joining live stream...');
 };
+
+function setupLiveSignalChannel(isBroadcaster) {
+  if (!sb || !supabaseOnline) return;
+  if (liveSignalChannel) { try { liveSignalChannel.unsubscribe(); } catch(e) {} }
+  var chName = 'stream-signal-' + liveStreamId;
+  liveSignalChannel = sb.channel(chName);
+  liveSignalChannel.on('broadcast', { event: 'signal' }, function(payload) {
+    var msg = payload.payload;
+    if (!msg) return;
+    if (isBroadcaster) handleBroadcasterSignal(msg);
+    else handleViewerSignal(msg);
+  });
+  liveSignalChannel.subscribe(function(status) {
+    if (status === 'SUBSCRIBED' && !isBroadcaster) {
+      liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'join', from: cu.id, to: 'all' } });
+    }
+  });
+}
+
+async function handleBroadcasterSignal(msg) {
+  if (msg.type === 'join' && msg.from !== cu.id) {
+    var viewerId = msg.from;
+    var pc = new RTCPeerConnection({ iceServers: liveIceServers });
+    livePcMap[viewerId] = pc;
+    if (liveStream) liveStream.getTracks().forEach(function(track) { pc.addTrack(track, liveStream); });
+    pc.onicecandidate = function(e) {
+      if (e.candidate) liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'ice', from: cu.id, to: viewerId, data: e.candidate } });
+    };
+    pc.onconnectionstatechange = function() { if (pc.connectionState === 'connected') updateLiveViewerCount(); };
+    var offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'offer', from: cu.id, to: viewerId, data: offer } });
+  }
+  if (msg.type === 'answer' && msg.to === cu.id) {
+    var pc = livePcMap[msg.from];
+    if (pc) await pc.setRemoteDescription(new RTCSessionDescription(msg.data));
+  }
+  if (msg.type === 'ice' && msg.to === cu.id) {
+    var pc = livePcMap[msg.from];
+    if (pc) await pc.addIceCandidate(new RTCIceCandidate(msg.data));
+  }
+  if (msg.type === 'chat') appendLiveChat(msg.fromName || 'User', msg.text, msg.from === cu.id);
+}
+
+async function handleViewerSignal(msg) {
+  if (msg.type === 'offer' && msg.to === cu.id) {
+    if (liveViewerPc) { try { liveViewerPc.close(); } catch(e) {} }
+    liveViewerPc = new RTCPeerConnection({ iceServers: liveIceServers });
+    liveViewerPc.ontrack = function(e) {
+      if (e.streams && e.streams[0]) { $('live-v').srcObject = e.streams[0]; $('live-viewers').textContent = 'Connected'; }
+    };
+    liveViewerPc.onicecandidate = function(e) {
+      if (e.candidate && liveSignalChannel) liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'ice', from: cu.id, to: liveStreamerId, data: e.candidate } });
+    };
+    await liveViewerPc.setRemoteDescription(new RTCSessionDescription(msg.data));
+    var answer = await liveViewerPc.createAnswer();
+    await liveViewerPc.setLocalDescription(answer);
+    liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'answer', from: cu.id, to: liveStreamerId, data: answer } });
+  }
+  if (msg.type === 'ice' && msg.to === cu.id && liveViewerPc) await liveViewerPc.addIceCandidate(new RTCIceCandidate(msg.data));
+  if (msg.type === 'chat') appendLiveChat(msg.fromName || 'User', msg.text, msg.from === cu.id);
+}
+
+function updateLiveViewerCount() {
+  var count = Object.keys(livePcMap).length;
+  liveViewers = count;
+  $('live-viewers').textContent = count + ' viewer' + (count !== 1 ? 's' : '');
+  if (sb && supabaseOnline && liveStreamId) sb.from('live_streams').update({ viewer_count: count }).eq('id', liveStreamId).catch(function(){});
+}
+
+function appendLiveChat(name, text, isMe) {
+  var chat = $('live-chat');
+  var div = document.createElement('div');
+  div.className = 'live-chat-msg';
+  if (isMe) { div.style.alignSelf = 'flex-end'; div.style.background = 'rgba(232,213,116,0.2)'; div.style.color = '#E8D574'; }
+  div.innerHTML = '<b>' + esc(name) + ':</b> ' + esc(text);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  if (chat.children.length > 30) chat.removeChild(chat.firstChild);
+}
+
 window.sendLiveChat = function() {
   var inp = $('live-chat-input');
   var t = inp.value.trim();
   if (!t) return;
-  var chat = $('live-chat');
-  var div = document.createElement('div');
-  div.className = 'live-chat-msg';
-  div.style.alignSelf = 'flex-end';
-  div.style.background = 'rgba(232,213,116,0.2)';
-  div.style.color = '#E8D574';
   var name = cu && cu.user_metadata && cu.user_metadata.display_name ? cu.user_metadata.display_name : 'You';
-  div.innerHTML = '<b>' + esc(name) + ':</b> ' + esc(t);
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  if (chat.children.length > 20) chat.removeChild(chat.firstChild);
+  appendLiveChat(name, t, true);
+  if (liveSignalChannel) liveSignalChannel.send({ type: 'broadcast', event: 'signal', payload: { type: 'chat', from: cu.id, fromName: name, text: t } });
   inp.value = '';
 };
-var liveStream = null;
-var liveViewers = 0;
-var liveViewerInterval = null;
-var liveChatInterval = null;
+
+window.endLive = function() {
+  if (liveIsBroadcaster) { if (!confirm('End your live stream?')) return; cleanupLive(); showToast('Live ended'); }
+  else { cleanupLive(); showToast('Left stream'); }
+};
+
+function cleanupLive() {
+  $('live-o').classList.remove('on');
+  if (liveStream) { liveStream.getTracks().forEach(function(t) { t.stop(); }); liveStream = null; }
+  if (liveViewerPc) { try { liveViewerPc.close(); } catch(e) {} liveViewerPc = null; }
+  Object.keys(livePcMap).forEach(function(k) { try { livePcMap[k].close(); } catch(e) {} });
+  livePcMap = {};
+  if (liveSignalChannel) { try { liveSignalChannel.unsubscribe(); } catch(e) {} liveSignalChannel = null; }
+  if (liveIsBroadcaster && liveStreamId && sb && supabaseOnline) sb.from('live_streams').update({ is_active: false, ended_at: new Date().toISOString() }).eq('id', liveStreamId).catch(function(){});
+  if (!liveIsBroadcaster && liveStreamId && cu && sb && supabaseOnline) sb.from('stream_viewers').update({ left_at: new Date().toISOString() }).eq('stream_id', liveStreamId).eq('user_id', cu.id).catch(function(){});
+  var info = $('live-streamer-info'); if (info) info.remove();
+  $('live-chat').innerHTML = '';
+  liveChatMsgs = [];
+  liveStreamId = null;
+  liveStreamerId = null;
+  liveIsBroadcaster = false;
+  liveViewers = 0;
+}
+
+window.loadActiveStreams = async function() {
+  var container = $('active-streams-banner');
+  if (!container) return;
+  if (!sb || !supabaseOnline) { container.style.display = 'none'; return; }
+  try {
+    var r = await sb.from('live_streams').select('*, profiles:user_id(display_name, handle, avatar_url)').eq('is_active', true).order('started_at', { ascending: false });
+    var streams = r.data || [];
+    if (!streams.length) { container.style.display = 'none'; return; }
+    var h = '<div style="display:flex;gap:12px;overflow-x:auto;padding:4px 0">';
+    streams.forEach(function(s) {
+      var prof = s.profiles || {};
+      var name = prof.display_name || 'User';
+      var avatar = prof.avatar_url ? '<img src="' + prof.avatar_url + '" style="width:100%;height:100%;object-fit:cover">' : name[0].toUpperCase();
+      h += '<div onclick="watchLive(\'' + s.id + '\',\'' + s.user_id + '\',\'' + esc(name) + '\')" style="flex:0 0 auto;text-align:center;cursor:pointer">';
+      h += '<div style="width:64px;height:64px;border-radius:50%;background:#FF3366;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px;border:3px solid #FF3366;position:relative">';
+      h += '<div style="position:absolute;inset:0;border-radius:50%;overflow:hidden">' + avatar + '</div>';
+      h += '<div style="position:absolute;bottom:-2px;right:-2px;background:#FF3366;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px">LIVE</div>';
+      h += '</div>';
+      h += '<div style="font-size:12px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70px">' + esc(name) + '</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+    container.innerHTML = h;
+    container.style.display = 'block';
+  } catch(e) { container.style.display = 'none'; }
+};
 
 // ==================== VIDEO CALLS ====================
 window.startVideoCall = async function() {
@@ -281,7 +439,7 @@ window.sendMsg=function(){if(!activeThread)return;var inp=$('msg-input');var t=i
 // ==================== OFFLINE HANDLING ====================
 window.addEventListener('offline',function(){showToast('You are offline. Some features may not work.')});window.addEventListener('online',function(){showToast('You are back online!')});
 // ==================== INIT ====================
-function tryLogin(){if(localStorage.getItem('cl_user')){try{cu=JSON.parse(localStorage.getItem('cl_user'));showApp();return true}catch(e){}}return false}
-if(sb&&supabaseOnline){sb.auth.getSession().then(function(r){if(r.data&&r.data.session){cu=r.data.session.user;svu();showApp()}else{tryLogin()}}).catch(function(){tryLogin()})}else{tryLogin()}
+function tryLogin(){if(localStorage.getItem('cl_user')){try{cu=JSON.parse(localStorage.getItem('cl_user'));showApp();loadAllFollows();return true}catch(e){}}return false}
+if(sb&&supabaseOnline){sb.auth.getSession().then(function(r){if(r.data&&r.data.session){cu=r.data.session.user;svu();showApp();loadAllFollows()}else{tryLogin()}}).catch(function(){tryLogin()})}else{tryLogin()}
 // Check for PayPal return
 if(location.search.includes('paypal')){setTimeout(function(){if(vu){if(!follows[vu.id])follows[vu.id]={following:false,subscribed:false};follows[vu.id].subscribed=true;svf();showToast('Payment successful! You are now subscribed.');history.replaceState(null,'',location.pathname)}},1000)}}
