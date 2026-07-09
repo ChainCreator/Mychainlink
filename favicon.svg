@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background -->
+  <rect width="64" height="64" fill="#121212" rx="12"/>
+  
+  <!-- Chain Link Icon (centered, smaller) -->
+  <g transform="translate(16, 16) scale(0.8)">
+    <!-- First link -->
+    <path d="M20 10 L20 10 C28 2, 40 2, 48 10 L48 30 C48 38, 40 42, 32 42 L32 42 C24 42, 16 38, 16 30 Z" 
+          fill="none" stroke="#C4A35A" stroke-width="6" stroke-linecap="round"/>
+    <!-- Second link (interlocked) -->
+    <path d="M32 20 L32 20 C40 12, 52 12, 60 20 L60 40 C60 48, 52 52, 44 52 L44 52 C36 52, 28 48, 28 40 Z" 
+          fill="none" stroke="#C4A35A" stroke-width="6" stroke-linecap="round"/>
+    <!-- Connection dot -->
+    <circle cx="36" cy="28" r="4" fill="#C4A35A"/>
+  </g>
+</svg>

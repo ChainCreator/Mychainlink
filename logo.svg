@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <!-- Background -->
+  <rect width="400" height="120" fill="#121212" rx="12"/>
+  
+  <!-- Chain Link Icon -->
+  <g transform="translate(30, 30)">
+    <!-- First link -->
+    <path d="M20 10 L20 10 C28 2, 40 2, 48 10 L48 30 C48 38, 40 42, 32 42 L32 42 C24 42, 16 38, 16 30 Z" 
+          fill="none" stroke="#C4A35A" stroke-width="6" stroke-linecap="round"/>
+    <!-- Second link (interlocked) -->
+    <path d="M32 20 L32 20 C40 12, 52 12, 60 20 L60 40 C60 48, 52 52, 44 52 L44 52 C36 52, 28 48, 28 40 Z" 
+          fill="none" stroke="#C4A35A" stroke-width="6" stroke-linecap="round"/>
+    <!-- Connection dot -->
+    <circle cx="36" cy="28" r="4" fill="#C4A35A"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="110" y="55" font-family="Inter, -apple-system, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF">My Chain</text>
+  <text x="110" y="85" font-family="Inter, -apple-system, sans-serif" font-size="32" font-weight="700" fill="#C4A35A">Link</text>
+  
+  <!-- Tagline -->
+  <text x="110" y="105" font-family="Inter, -apple-system, sans-serif" font-size="11" font-weight="400" fill="#888" letter-spacing="1">NO FILTERS. NO GALLERY. REAL CONNECTIONS.</text>
+</svg>

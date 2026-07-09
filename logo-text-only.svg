@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80" width="400" height="80">
+  <rect width="400" height="80" fill="#121212" rx="12"/>
+  <text x="30" y="45" font-family="Inter, -apple-system, sans-serif" font-size="36" font-weight="800" fill="#FFFFFF">My Chain</text>
+  <text x="200" y="45" font-family="Inter, -apple-system, sans-serif" font-size="36" font-weight="800" fill="#C4A35A">Link</text>
+  <text x="30" y="65" font-family="Inter, -apple-system, sans-serif" font-size="10" font-weight="400" fill="#888" letter-spacing="2">NO FILTERS. NO GALLERY. REAL CONNECTIONS.</text>
+</svg>

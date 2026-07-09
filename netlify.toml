@@ -1,3 +1,11 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://accounts.google.com https://www.paypal.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co https://www.paypal.com https://*.googleusercontent.com https://*.fbcdn.net; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paypal.com https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.paypal.com;"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
 [build]
   publish = "."
 
