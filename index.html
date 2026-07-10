@@ -608,17 +608,18 @@ async function loadUserProfile() {
   if (!currentUser) return;
   const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
   if (error || !data) {
-    // Create profile if doesn't exist (e.g., OAuth sign-in)
     const name = currentUser.user_metadata?.display_name || currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
     const handle = currentUser.user_metadata?.handle || name.toLowerCase().replace(/[^a-z0-9]/g, '') + Math.floor(Math.random()*1000);
-    await supabaseClient.from('profiles').upsert({
+    const { error: insertErr } = await supabaseClient.from('profiles').upsert({
       id: currentUser.id,
       display_name: name,
       handle: handle,
       email: currentUser.email || '',
       bio: '',
+      location: '',
       avatar_url: currentUser.user_metadata?.avatar_url || currentUser.user_metadata?.picture || ''
     });
+    if (insertErr) console.error('Profile create error:', insertErr);
     const { data: newData } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
     currentUserProfile = newData;
   } else {
@@ -1052,12 +1053,12 @@ function handleFileSelect(e) { const f = e.target.files[0]; if (!f) return; cons
 // ==================== PROFILE ====================
 async function showProfile(handle) {
   const { data: user, error } = await supabaseClient.from('profiles').select('*').eq('handle', handle).single();
-  if (error || !user) return;
+  if (error || !user) { showToast('Profile not found'); return; }
   currentProfileUser = user;
   document.getElementById('profile-name').textContent = user.display_name || 'User';
   document.getElementById('profile-handle').textContent = '@' + (user.handle || 'user');
   document.getElementById('profile-bio').textContent = user.bio || 'No bio yet';
-  document.getElementById('profile-location').textContent = '📍 No location';
+  document.getElementById('profile-location').textContent = user.location ? '📍 ' + user.location : '📍 No location';
   const avatar = document.getElementById('profile-avatar');
   if (user.avatar_url) { avatar.innerHTML = '<img src="' + escapeHtml(user.avatar_url) + '">'; }
   else { avatar.innerHTML = '<span id="profile-initial">' + (user.display_name ? user.display_name.charAt(0).toUpperCase() : '?') + '</span>'; }
@@ -1195,17 +1196,10 @@ function editProfile() {
 }
 
 async function saveProfile() {
-  // Check if user is logged in
   if (!currentUser) {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-      await loadUserProfile();
-    } else {
-      alert('Please sign in first.');
-      navigate('auth');
-      return;
-    }
+    if (session) { currentUser = session.user; await loadUserProfile(); }
+    else { showToast('Please sign in first'); navigate('auth'); return; }
   }
   const name = document.getElementById('edit-name').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
@@ -1213,16 +1207,23 @@ async function saveProfile() {
   const isCreator = document.getElementById('edit-creator')?.checked || false;
   const price = parseFloat(document.getElementById('edit-price')?.value) || 0;
   const paypalEmail = document.getElementById('edit-paypal')?.value.trim() || '';
+  if (!name) { showToast('Name is required'); return; }
+  showLoading('Saving profile...');
   const updates = { 
-    display_name: name, 
-    bio: bio + (location ? '\n📍 ' + location : ''),
+    display_name: name,
+    bio: bio,
+    location: location,
     is_creator: isCreator,
     price: price > 0 ? price : 0,
-    paypal_email: paypalEmail
+    paypal_email: paypalEmail,
+    updated_at: new Date().toISOString()
   };
-  await supabaseClient.from('profiles').update(updates).eq('id', currentUser.id);
+  const { error } = await supabaseClient.from('profiles').update(updates).eq('id', currentUser.id);
+  if (error) { hideLoading(); showToast('Error: ' + error.message); return; }
   await loadUserProfile();
+  hideLoading();
   closeModal();
+  showToast('Profile saved!');
   if (currentProfileUser) showProfile(currentProfileUser.handle);
 }
 
@@ -1230,16 +1231,18 @@ function editProfilePhoto() { document.getElementById('profile-photo-input').cli
 
 async function handleProfilePhoto(e) {
   const f = e.target.files[0]; if (!f) return;
-  if (!currentUser) { alert('Please sign in first.'); return; }
-  showLoading('Uploading...');
+  if (!currentUser) { showToast('Please sign in first'); return; }
+  showLoading('Uploading photo...');
   try {
     const dataUrl = await new Promise((res, rej) => { const r = new FileReader(); r.onload = ev => res(ev.target.result); r.onerror = rej; r.readAsDataURL(f); });
     const url = await uploadImage(dataUrl, 'avatars');
-    await supabaseClient.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+    const { error } = await supabaseClient.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+    if (error) throw error;
     await loadUserProfile();
     if (currentProfileUser) showProfile(currentProfileUser.handle);
-  } catch (err) { alert('Upload failed: ' + err.message); }
-  hideLoading();
+    hideLoading();
+    showToast('Photo updated!');
+  } catch (err) { hideLoading(); showToast('Upload failed: ' + err.message); }
 }
 
 // ==================== SEARCH ====================
