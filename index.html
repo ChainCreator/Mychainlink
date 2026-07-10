@@ -470,8 +470,9 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
   </div>
 </div>
 
-<div class="modal" id="modal">
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal-content" id="modal-content">
+    <button class="modal-close" onclick="closeModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#e0e0e0;font-size:24px;cursor:pointer;z-index:10">&times;</button>
     <h3 id="modal-title">Title</h3>
     <div id="modal-body"></div>
   </div>
@@ -702,36 +703,59 @@ async function handleSignUp(e) {
   showLoading('Creating account...');
   try {
     const { data: existing } = await supabaseClient.from('profiles').select('id').eq('handle', handle).maybeSingle();
-    if (existing) { hideLoading(); showAuthError('Handle taken'); return; }
+    if (existing) { hideLoading(); showAuthError('Handle @' + handle + ' is already taken'); return; }
   } catch (e) { console.log('Profile check error:', e); }
-  let signUpError = null;
   try {
-    const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: name, handle: handle, email: email, location: location, bio: location ? '\u{1F4CD} ' + location : '' } } });
-    if (error) { signUpError = error; }
-    else if (data.user) {
-      try { await supabaseClient.from('profiles').upsert({ id: data.user.id, display_name: name, handle: handle, email: email, location: location, bio: location ? '\u{1F4CD} ' + location : '' }); } catch (e) { console.log('Profile insert error:', e); }
-      currentUser = data.user;
-      await loadUserProfile();
+    const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: name, handle: handle, email: email, location: location, bio: location ? '📍 ' + location : '' } } });
+    if (error) {
       hideLoading();
-      navigate('app');
-      return;
-    } else {
-      hideLoading();
-      showAuthError('Check your email for confirmation link.');
+      showAuthError(error.message || 'Signup failed. Please try again.');
       return;
     }
+    if (data.user) {
+      // Create/update profile regardless of confirmation status
+      try {
+        await supabaseClient.from('profiles').upsert({
+          id: data.user.id,
+          display_name: name,
+          handle: handle,
+          email: email,
+          location: location,
+          bio: location ? '📍 ' + location : ''
+        });
+      } catch (e) { console.log('Profile insert error:', e); }
+      // Check if email is confirmed
+      if (data.user.email_confirmed_at || data.user.confirmed_at) {
+        // Auto-confirmed, log them in
+        currentUser = data.user;
+        await loadUserProfile();
+        hideLoading();
+        navigate('app');
+      } else {
+        // Email confirmation required
+        hideLoading();
+        showModal('Check Your Email',
+          '<div style="text-align:center">' +
+          '<p style="font-size:48px;margin-bottom:16px">📧</p>' +
+          '<p style="font-size:16px;color:#ccc;margin-bottom:12px">We sent a confirmation link to<br><strong style="color:#ffd700">' + email + '</strong></p>' +
+          '<p style="font-size:13px;color:#888;margin-bottom:20px">Click the link in that email to activate your account, then sign in here.</p>' +
+          '<button onclick="closeModal();switchAuth(\'in\')" style="padding:12px 24px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:none;border-radius:12px;color:#000;font-weight:700;cursor:pointer">Go to Sign In</button>' +
+          '</div>'
+        );
+        // Clear the form
+        document.getElementById('signup-name').value = '';
+        document.getElementById('signup-handle').value = '';
+        document.getElementById('signup-email').value = '';
+        document.getElementById('signup-password').value = '';
+        document.getElementById('signup-location').value = '';
+      }
+    } else {
+      hideLoading();
+      showAuthError('Something went wrong. Please try again.');
+    }
   } catch (err) {
-    signUpError = err;
-  }
-  if (signUpError) {
     hideLoading();
-    let msg = 'Signup failed. Please try again.';
-    if (signUpError.message) msg = signUpError.message;
-    else if (signUpError.msg) msg = signUpError.msg;
-    else if (signUpError.error_description) msg = signUpError.error_description;
-    else if (typeof signUpError === 'string') msg = signUpError;
-    else msg = JSON.stringify(signUpError);
-    showAuthError(msg);
+    showAuthError(err.message || 'Signup failed. Please try again.');
   }
 }
 
@@ -765,31 +789,11 @@ async function handleSignOut() {
 }
 
 async function handleGoogleSignIn(response) {
-  if (!response || !response.credential) { showAuthError('Google sign-in failed: no credential returned'); return; }
-  showLoading('Signing in with Google...');
-  try {
-    const { data, error } = await supabaseClient.auth.signInWithIdToken({ provider: 'google', token: response.credential });
-    if (error) { 
-      console.error('Google sign-in error:', error); 
-      hideLoading(); 
-      showAuthError('Google sign-in failed: ' + (error.message || JSON.stringify(error))); 
-      return; 
-    }
-    currentUser = data.user;
-    await loadUserProfile();
-    hideLoading();
-    navigate('app');
-  } catch (err) {
-    console.error('Google sign-in exception:', err);
-    hideLoading();
-    showAuthError('Google sign-in failed: ' + (err.message || 'Check console for details'));
-  }
+  showModal('Coming Soon', '<p style="text-align:center;font-size:16px;color:#ccc;margin-bottom:20px">Google Sign In is coming soon!</p><p style="text-align:center;font-size:13px;color:#888">For now, please create an account with your email address.</p><div style="text-align:center"><button onclick="closeModal()" style="padding:10px 24px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer">Got it</button></div>');
 }
 
 async function handleFacebookSignIn() {
-  showLoading('Signing in with Facebook...');
-  const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.origin } });
-  if (error) { hideLoading(); showAuthError('Facebook sign-in failed: ' + error.message); }
+  showModal('Coming Soon', '<p style="text-align:center;font-size:16px;color:#ccc;margin-bottom:20px">Facebook Sign In is coming soon!</p><p style="text-align:center;font-size:13px;color:#888">For now, please create an account with your email address.</p><div style="text-align:center"><button onclick="closeModal()" style="padding:10px 24px;background:linear-gradient(135deg,#1877f2,#166fe5);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer">Got it</button></div>');
 }
 
 // ==================== PASSWORD RESET ====================
@@ -1619,12 +1623,40 @@ function timeAgo(timestamp) {
 async function init() {
   const s = getSettings();
   Object.keys(s).forEach(k => { const el = document.getElementById('toggle-' + k); if (el) el.classList.toggle('on', s[k]); });
+
+  // Handle email confirmation links first
+  const hash = window.location.hash;
+  const search = window.location.search;
+  const urlParams = new URLSearchParams(search.replace('?',''));
+  const hashParams = new URLSearchParams(hash.replace('#',''));
+  const tokenHash = urlParams.get('token_hash') || hashParams.get('token_hash') || urlParams.get('token') || hashParams.get('token');
+  const type = urlParams.get('type') || hashParams.get('type');
+
+  if (tokenHash && type === 'signup') {
+    showLoading('Confirming your email...');
+    try {
+      const { data, error } = await supabaseClient.auth.verifyOtp({ token_hash: tokenHash, type: 'email' });
+      hideLoading();
+      if (error) {
+        showAuthError('Confirmation failed: ' + error.message);
+      } else if (data.user) {
+        currentUser = data.user;
+        await loadUserProfile();
+        showToast('Email confirmed! Welcome to My Chain Link.');
+        navigate('app');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+    } catch (err) {
+      hideLoading();
+      showAuthError('Confirmation failed. Please try signing in.');
+    }
+  }
+
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     currentUser = session.user;
     await loadUserProfile();
-    const hash = window.location.hash;
-    const search = window.location.search;
     if (search.includes('type=recovery') || hash.includes('type=recovery')) { handleRecovery(); }
     else { navigate('app'); }
   }
