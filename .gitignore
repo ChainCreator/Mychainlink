@@ -1,6 +1,6 @@
-*.tmp
+node_modules
+.env
 *.log
+*.tmp
 .DS_Store
-
-# Local Netlify folder
 .netlify

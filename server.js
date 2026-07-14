@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,7 +29,12 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // ============================================================
-// PROFILES
+// STATIC FILES (frontend)
+// ============================================================
+app.use(express.static(path.join(__dirname)));
+
+// ============================================================
+// API ROUTES
 // ============================================================
 app.get('/api/profiles/:handle', async (req, res) => {
   const { data, error } = await supabase
@@ -730,8 +736,13 @@ app.get('/', (req, res) => {
   });
 });
 
+// Serve index.html for any non-API route (SPA fallback)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`MyChainLink API running on port ${PORT}`);
+  console.log(`MyChainLink running on port ${PORT}`);
 });
 
 module.exports = app;
