@@ -15,6 +15,10 @@ BEGIN
       bio text DEFAULT '',
       avatar_url text DEFAULT '',
       location text DEFAULT '',
+      birth_date date DEFAULT NULL,
+      gender text DEFAULT '',
+      website text DEFAULT '',
+      interests text[] DEFAULT '{}',
       is_premium boolean DEFAULT false,
       is_creator boolean DEFAULT false,
       paypal_email text DEFAULT '',
@@ -31,6 +35,10 @@ DO $$
 BEGIN
   ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email text DEFAULT '';
   ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS location text DEFAULT '';
+  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS birth_date date DEFAULT NULL;
+  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS gender text DEFAULT '';
+  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS website text DEFAULT '';
+  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS interests text[] DEFAULT '{}';
 EXCEPTION WHEN OTHERS THEN
   RAISE NOTICE 'columns may already exist: %', SQLERRM;
 END $$;
@@ -492,7 +500,7 @@ CREATE TRIGGER on_story_inserted
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, display_name, handle, email, location, bio, avatar_url, created_at, updated_at)
+  INSERT INTO public.profiles (id, display_name, handle, email, location, bio, avatar_url, birth_date, gender, website, interests, created_at, updated_at)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'display_name', 'User'),
@@ -501,6 +509,10 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'location', ''),
     COALESCE(NEW.raw_user_meta_data->>'bio', ''),
     COALESCE(NEW.raw_user_meta_data->>'avatar_url', ''),
+    COALESCE((NEW.raw_user_meta_data->>'birth_date')::date, NULL),
+    COALESCE(NEW.raw_user_meta_data->>'gender', ''),
+    COALESCE(NEW.raw_user_meta_data->>'website', ''),
+    COALESCE(ARRAY(SELECT jsonb_array_elements_text(NEW.raw_user_meta_data->'interests')), '{}'),
     NOW(),
     NOW()
   )

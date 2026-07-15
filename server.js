@@ -64,10 +64,21 @@ app.get('/api/search', async (req, res) => {
 app.put('/api/profiles/:id', authMiddleware, async (req, res) => {
   if (req.params.id !== req.user.id) return res.status(403).json({ error: 'Not allowed' });
 
-  const { display_name, bio, avatar_url, location, paypal_email } = req.body;
+  const { display_name, bio, avatar_url, location, paypal_email, birth_date, gender, website, interests } = req.body;
+  const updateData = { updated_at: new Date() };
+  if (display_name !== undefined) updateData.display_name = display_name;
+  if (bio !== undefined) updateData.bio = bio;
+  if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
+  if (location !== undefined) updateData.location = location;
+  if (paypal_email !== undefined) updateData.paypal_email = paypal_email;
+  if (birth_date !== undefined) updateData.birth_date = birth_date;
+  if (gender !== undefined) updateData.gender = gender;
+  if (website !== undefined) updateData.website = website;
+  if (interests !== undefined) updateData.interests = interests;
+
   const { data, error } = await supabase
     .from('profiles')
-    .update({ display_name, bio, avatar_url, location, paypal_email, updated_at: new Date() })
+    .update(updateData)
     .eq('id', req.params.id)
     .select()
     .single();

@@ -270,6 +270,10 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
           <input type="password" id="signin-password" placeholder="Password" required>
         <span class="password-toggle" onclick="togglePassword('signin-password',this)" aria-label="Show password">show</span>
         </div>
+        <div class="stay-connected-wrap" style="display:flex;align-items:center;gap:8px;margin:10px 0 14px">
+          <input type="checkbox" id="stay-connected" style="width:18px;height:18px;accent-color:#ffd700;margin:0;flex-shrink:0;cursor:pointer" checked>
+          <label for="stay-connected" style="font-size:13px;color:#aaa;cursor:pointer">🔗 Stay connected</label>
+        </div>
         <button type="submit">Sign In</button>
         <div class="forgot" onclick="showForgotModal()">Forgot password?</div>
         <div style="text-align:center;margin:16px 0;position:relative"><div style="border-top:1px solid #222;position:absolute;top:50%;left:0;right:0"></div><span style="background:#12121a;padding:0 12px;position:relative;font-size:12px;color:#666">or</span></div>
@@ -283,6 +287,14 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
         </div>
       </form>
       <form class="auth-form" id="form-signup" onsubmit="handleSignUp(event)">
+        <div class="signup-avatar-wrap" id="signup-avatar-wrap" style="text-align:center;margin-bottom:16px">
+          <div class="signup-avatar-preview" id="signup-avatar-preview" style="width:80px;height:80px;border-radius:50%;background:#333;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;overflow:hidden;border:2px dashed #555;position:relative" onclick="document.getElementById('signup-avatar').click()">
+            <span id="signup-avatar-icon">📷</span>
+            <img id="signup-avatar-img" style="width:100%;height:100%;object-fit:cover;display:none" alt="Avatar">
+          </div>
+          <input type="file" id="signup-avatar" accept="image/*" style="display:none" onchange="handleSignupAvatar(this)">
+          <label style="font-size:11px;color:#888;cursor:pointer" onclick="document.getElementById('signup-avatar').click()">Add Photo</label>
+        </div>
         <input type="text" id="signup-name" placeholder="Full Name" required>
         <input type="text" id="signup-handle" placeholder="@handle" required oninput="formatHandle(this)">
         <input type="email" id="signup-email" placeholder="Email" required>
@@ -291,7 +303,37 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
           <span class="password-toggle" onclick="togglePassword('signup-password',this)" aria-label="Show password">show</span>
         </div>
         <input type="text" id="signup-location" placeholder="Location (City, Country)">
-        <button type="submit">Create Account</button>
+        <textarea id="signup-bio" placeholder="Tell us about yourself..." style="min-height:60px;margin-top:8px"></textarea>
+        <div class="signup-row" style="display:flex;gap:8px;margin-top:8px">
+          <input type="date" id="signup-birthdate" placeholder="Birth Date" style="flex:1">
+          <select id="signup-gender" style="flex:1">
+            <option value="" disabled selected>Gender</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="nonbinary">Non-binary</option>
+            <option value="other">Other</option>
+            <option value="prefer-not">Prefer not to say</option>
+          </select>
+        </div>
+        <input type="url" id="signup-website" placeholder="Website (https://...)" style="margin-top:8px">
+        <div class="signup-interests" style="margin-top:12px">
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Interests (pick a few)</label>
+          <div class="interest-chips" id="signup-interest-chips" style="display:flex;flex-wrap:wrap;gap:6px">
+            <span class="interest-chip" data-value="music" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🎵 Music</span>
+            <span class="interest-chip" data-value="photography" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">📸 Photography</span>
+            <span class="interest-chip" data-value="travel" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">✈️ Travel</span>
+            <span class="interest-chip" data-value="food" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🍕 Food</span>
+            <span class="interest-chip" data-value="fitness" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">💪 Fitness</span>
+            <span class="interest-chip" data-value="art" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🎨 Art</span>
+            <span class="interest-chip" data-value="gaming" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🎮 Gaming</span>
+            <span class="interest-chip" data-value="tech" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">💻 Tech</span>
+            <span class="interest-chip" data-value="fashion" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">👗 Fashion</span>
+            <span class="interest-chip" data-value="sports" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">⚽ Sports</span>
+            <span class="interest-chip" data-value="books" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">📚 Books</span>
+            <span class="interest-chip" data-value="movies" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🎬 Movies</span>
+          </div>
+        </div>
+        <button type="submit" style="margin-top:16px">Create Account</button>
         <div style="text-align:center;margin:16px 0;position:relative"><div style="border-top:1px solid #222;position:absolute;top:50%;left:0;right:0"></div><span style="background:#12121a;padding:0 12px;position:relative;font-size:12px;color:#666">or</span></div>
         <div id="g_id_onload_up" data-client_id="461385519919-d4d2fu8i0c3mm9hiedo1lnge37k1pihc.apps.googleusercontent.com" data-callback="handleGoogleSignIn" data-auto_prompt="false"></div>
         <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="signup_with" data-shape="pill" data-logo_alignment="left" data-width="312"></div>
@@ -678,6 +720,34 @@ function switchAuth(tab) {
   document.getElementById('auth-error').style.display = 'none';
 }
 
+function handleSignupAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('signup-avatar-img').src = e.target.result;
+    document.getElementById('signup-avatar-img').style.display = 'block';
+    document.getElementById('signup-avatar-icon').style.display = 'none';
+    document.getElementById('signup-avatar-preview').style.border = '2px solid #ffd700';
+  };
+  reader.readAsDataURL(file);
+}
+
+function toggleInterest(chip) {
+  chip.classList.toggle('active');
+  if (chip.classList.contains('active')) {
+    chip.style.background = 'linear-gradient(135deg,#ffd700,#ffaa00)';
+    chip.style.color = '#000';
+    chip.style.borderColor = '#ffd700';
+    chip.style.fontWeight = '600';
+  } else {
+    chip.style.background = '#222';
+    chip.style.color = '#888';
+    chip.style.borderColor = '#333';
+    chip.style.fontWeight = '400';
+  }
+}
+
 function formatHandle(input) {
   let v = input.value.trim();
   if (!v.startsWith('@')) input.value = '@' + v;
@@ -698,7 +768,17 @@ async function handleSignUp(e) {
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   const location = document.getElementById('signup-location').value.trim();
-  if (!name || !handle || !email || !password) { showAuthError('All fields required'); return; }
+  const bio = document.getElementById('signup-bio').value.trim();
+  const birthDate = document.getElementById('signup-birthdate').value;
+  const gender = document.getElementById('signup-gender').value;
+  const website = document.getElementById('signup-website').value.trim();
+  const avatarFile = document.getElementById('signup-avatar').files[0];
+  const selectedInterests = [];
+  document.querySelectorAll('#signup-interest-chips .interest-chip.active').forEach(chip => {
+    selectedInterests.push(chip.getAttribute('data-value'));
+  });
+
+  if (!name || !handle || !email || !password) { showAuthError('Full name, handle, email, and password are required'); return; }
   if (handle.length < 3) { showAuthError('Handle must be 3+ chars'); return; }
   if (password.length < 6) { showAuthError('Password must be 6+ chars'); return; }
   showLoading('Creating account...');
@@ -706,34 +786,48 @@ async function handleSignUp(e) {
     const { data: existing } = await supabaseClient.from('profiles').select('id').eq('handle', handle).maybeSingle();
     if (existing) { hideLoading(); showAuthError('Handle @' + handle + ' is already taken'); return; }
   } catch (e) { console.log('Profile check error:', e); }
+
+  let avatarUrl = '';
+  if (avatarFile) {
+    try {
+      const filePath = 'avatars/' + Date.now() + '_' + avatarFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, avatarFile, { upsert: true });
+      if (!uploadError) {
+        const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
+        avatarUrl = urlData.publicUrl;
+      }
+    } catch (e) { console.log('Avatar upload error:', e); }
+  }
+
   try {
-    const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: name, handle: handle, email: email, location: location, bio: location ? '📍 ' + location : '' } } });
-    if (error) {
-      hideLoading();
-      showAuthError(error.message || 'Signup failed. Please try again.');
-      return;
-    }
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password,
+      options: {
+        data: {
+          display_name: name, handle: handle, email: email,
+          location: location, bio: bio, avatar_url: avatarUrl,
+          birth_date: birthDate || null, gender: gender, website: website,
+          interests: selectedInterests
+        }
+      }
+    });
+    if (error) { hideLoading(); showAuthError(error.message || 'Signup failed. Please try again.'); return; }
     if (data.user) {
-      // Create/update profile regardless of confirmation status
       try {
         await supabaseClient.from('profiles').upsert({
-          id: data.user.id,
-          display_name: name,
-          handle: handle,
-          email: email,
-          location: location,
-          bio: location ? '📍 ' + location : ''
+          id: data.user.id, display_name: name, handle: handle,
+          email: email, location: location, bio: bio, avatar_url: avatarUrl,
+          birth_date: birthDate || null, gender: gender, website: website,
+          interests: selectedInterests
         });
       } catch (e) { console.log('Profile insert error:', e); }
-      // Check if email is confirmed
       if (data.user.email_confirmed_at || data.user.confirmed_at) {
-        // Auto-confirmed, log them in
         currentUser = data.user;
+        localStorage.setItem('stay_connected', 'true');
         await loadUserProfile();
         hideLoading();
         navigate('app');
       } else {
-        // Email confirmation required
         hideLoading();
         showModal('Check Your Email',
           '<div style="text-align:center">' +
@@ -743,12 +837,18 @@ async function handleSignUp(e) {
           '<button onclick="closeModal();switchAuth(\'in\')" style="padding:12px 24px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:none;border-radius:12px;color:#000;font-weight:700;cursor:pointer">Go to Sign In</button>' +
           '</div>'
         );
-        // Clear the form
         document.getElementById('signup-name').value = '';
         document.getElementById('signup-handle').value = '';
         document.getElementById('signup-email').value = '';
         document.getElementById('signup-password').value = '';
         document.getElementById('signup-location').value = '';
+        document.getElementById('signup-bio').value = '';
+        document.getElementById('signup-birthdate').value = '';
+        document.getElementById('signup-gender').value = '';
+        document.getElementById('signup-website').value = '';
+        document.getElementById('signup-avatar-img').style.display = 'none';
+        document.getElementById('signup-avatar-icon').style.display = 'block';
+        document.querySelectorAll('#signup-interest-chips .interest-chip').forEach(c => c.classList.remove('active'));
       }
     } else {
       hideLoading();
@@ -764,6 +864,7 @@ async function handleSignIn(e) {
   e.preventDefault();
   const input = document.getElementById('signin-handle').value.trim();
   const password = document.getElementById('signin-password').value;
+  const stayConnected = document.getElementById('stay-connected').checked;
   if (!input || !password) { showAuthError('Enter email and password'); return; }
   let email = input;
   if (!input.includes('@')) {
@@ -776,6 +877,9 @@ async function handleSignIn(e) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { hideLoading(); showAuthError(error.message); return; }
   currentUser = data.user;
+  // Save stay connected preference
+  if (stayConnected) { localStorage.setItem('stay_connected', 'true'); }
+  else { localStorage.setItem('stay_connected', 'false'); }
   await loadUserProfile();
   hideLoading();
   navigate('app');
@@ -786,6 +890,7 @@ async function handleSignOut() {
   if (messageSubscription) { await supabaseClient.removeChannel(messageSubscription); messageSubscription = null; }
   await supabaseClient.auth.signOut();
   currentUser = null; currentUserProfile = null;
+  localStorage.removeItem('stay_connected');
   navigate('landing');
 }
 
@@ -1644,6 +1749,7 @@ async function init() {
         showAuthError('Confirmation failed: ' + error.message);
       } else if (data.user) {
         currentUser = data.user;
+        localStorage.setItem('stay_connected', 'true');
         await loadUserProfile();
         showToast('Email confirmed! Welcome to My Chain Link.');
         navigate('app');
@@ -1657,7 +1763,8 @@ async function init() {
   }
 
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) {
+  const stayConnected = localStorage.getItem('stay_connected') === 'true';
+  if (session && stayConnected) {
     currentUser = session.user;
     await loadUserProfile();
     if (search.includes('type=recovery') || hash.includes('type=recovery')) { handleRecovery(); }
