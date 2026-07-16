@@ -249,7 +249,7 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
       <div class="quote-author" id="quote-author">— Peter Drucker</div>
     </div>
     <div class="landing-footer">
-      <span>Get connected, stay connected.</span><br><br>
+      <span>Link on, and lock in.</span><br><br>
       Already have an account? <span onclick="navigate('auth')" style="cursor:pointer;text-decoration:underline;color:#ffd700">Sign In</span><br><br>
       <span style="font-size:11px;color:#444">&copy; All Rights Reserved to Kendal symes</span> &middot; <a href="privacy.html" style="font-size:11px;color:#666;text-decoration:underline">Privacy Policy</a>
     </div>
@@ -334,6 +334,38 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
             <span class="interest-chip" data-value="movies" onclick="toggleInterest(this)" style="padding:6px 14px;background:#222;border:1px solid #333;border-radius:20px;font-size:12px;color:#888;cursor:pointer;transition:all 0.2s">🎬 Movies</span>
           </div>
         </div>
+        <div class="signup-security" style="margin-top:16px;padding:16px;background:#1a1a2e;border-radius:12px;border:1px solid #333">
+          <label style="font-size:13px;color:#ffd700;display:block;margin-bottom:10px;font-weight:700">🔐 Security Questions (for account recovery)</label>
+          <p style="font-size:11px;color:#888;margin-bottom:10px">Pick 2 questions and answer them. You'll need these if you forget your password.</p>
+          <select id="signup-sq1" style="width:100%;margin-bottom:8px;padding:10px;background:#222;border:1px solid #333;border-radius:8px;color:#e0e0e0;font-size:13px">
+            <option value="" disabled selected>Choose Question 1</option>
+            <option value="pet">What was your first pet's name?</option>
+            <option value="city">What city were you born in?</option>
+            <option value="maiden">What is your mother's maiden name?</option>
+            <option value="school">What was the name of your first school?</option>
+            <option value="nickname">What was your childhood nickname?</option>
+            <option value="friend">What is your favorite childhood friend's name?</option>
+            <option value="street">What street did you grow up on?</option>
+            <option value="car">What was your first car?</option>
+            <option value="food">What is your favorite food?</option>
+            <option value="movie">What is your favorite movie?</option>
+          </select>
+          <input type="text" id="signup-sa1" placeholder="Answer to Question 1" style="margin-bottom:12px">
+          <select id="signup-sq2" style="width:100%;margin-bottom:8px;padding:10px;background:#222;border:1px solid #333;border-radius:8px;color:#e0e0e0;font-size:13px">
+            <option value="" disabled selected>Choose Question 2</option>
+            <option value="pet">What was your first pet's name?</option>
+            <option value="city">What city were you born in?</option>
+            <option value="maiden">What is your mother's maiden name?</option>
+            <option value="school">What was the name of your first school?</option>
+            <option value="nickname">What was your childhood nickname?</option>
+            <option value="friend">What is your favorite childhood friend's name?</option>
+            <option value="street">What street did you grow up on?</option>
+            <option value="car">What was your first car?</option>
+            <option value="food">What is your favorite food?</option>
+            <option value="movie">What is your favorite movie?</option>
+          </select>
+          <input type="text" id="signup-sa2" placeholder="Answer to Question 2">
+        </div>
         <button type="submit" style="margin-top:16px">Create Account</button>
         <div style="text-align:center;margin:16px 0;position:relative"><div style="border-top:1px solid #222;position:absolute;top:50%;left:0;right:0"></div><span style="background:#12121a;padding:0 12px;position:relative;font-size:12px;color:#666">or</span></div>
         <div id="g_id_onload_up" data-client_id="461385519919-d4d2fu8i0c3mm9hiedo1lnge37k1pihc.apps.googleusercontent.com" data-callback="handleGoogleSignIn" data-auto_prompt="false"></div>
@@ -367,7 +399,7 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
         <div class="feed-header"><h2>Feed</h2><span id="connection-status">&#x1F4E1; Online</span></div>
         <div class="story-bar" id="story-bar"></div>
         <div class="create-post">
-          <h3>&#x1F4F8; Get connected today...</h3>
+          <h3>&#x1F4F8; Link on, and lock in...</h3>
           <div class="camera-preview" id="camera-preview">
             <video id="camera-video" autoplay playsinline></video>
             <div class="camera-overlay"><button onclick="capturePhoto()" class="snap" title="Take Photo"></button><button onclick="stopCamera()" title="Cancel"></button></div>
