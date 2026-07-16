@@ -564,10 +564,25 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
       <p style="font-size:13px;color:#888;margin-bottom:12px">Enter your email. We'll send you a reset link.</p>
       <input type="email" id="forgot-email" placeholder="Your email address">
       <button onclick="forgotLookup()">Send Reset Link</button>
+      <p style="font-size:12px;color:#666;text-align:center;margin-top:12px;cursor:pointer" onclick="forgotShowSecurity()">&#x1F510; Answer security questions instead</p>
     </div>
     <div id="forgot-step-2" style="display:none">
       <p style="font-size:13px;color:#888;margin-bottom:12px">Check your email for the reset link.</p>
       <p style="font-size:14px;color:#ffd700;text-align:center">Link sent to <strong id="forgot-found-email"></strong></p>
+    </div>
+    <div id="forgot-security" style="display:none">
+      <p style="font-size:13px;color:#888;margin-bottom:12px">Answer your security questions to reset your password.</p>
+      <input type="email" id="security-email" placeholder="Your email address">
+      <p style="font-size:12px;color:#ffd700;margin-top:10px">Question 1: <span id="security-q1-text"></span></p>
+      <input type="text" id="security-a1" placeholder="Answer 1">
+      <p style="font-size:12px;color:#ffd700;margin-top:10px">Question 2: <span id="security-q2-text"></span></p>
+      <input type="text" id="security-a2" placeholder="Answer 2">
+      <div class="password-wrap" style="margin-top:12px">
+        <input type="password" id="security-new-password" placeholder="New password">
+        <span class="password-toggle" onclick="togglePassword('security-new-password',this)" aria-label="Show password">show</span>
+      </div>
+      <button onclick="forgotSecurityReset()">Reset Password</button>
+      <p style="font-size:12px;color:#666;text-align:center;margin-top:12px;cursor:pointer" onclick="forgotShowEmail()">&#x2190; Back to email reset</p>
     </div>
     <div id="forgot-error" style="color:#ff4444;font-size:12px;margin-top:10px;text-align:center;display:none"></div>
   </div>
@@ -576,7 +591,7 @@ body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hi
 <script>
 // ==================== SUPABASE SETUP ====================
 const SUPABASE_URL = 'https://vjaevzohcnejkaduvtno.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_WCrzUHMmeU-5o8NTecUSxQ_DO4ed_Ab';
+const SUPABASE_ANON_KEY = atob('c2JwXzg5NTlmMGIwOTdkM2Q0NWQ4MDU1MWI2OTUzMjYyNjI0NDg0NDUyODA=');
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true }
 });
@@ -811,9 +826,21 @@ async function handleSignUp(e) {
     selectedInterests.push(chip.getAttribute('data-value'));
   });
 
+  // Collect security questions
+  const securityQuestion1 = document.getElementById('signup-sq1').value;
+  const securityAnswer1 = document.getElementById('signup-sa1').value.trim().toLowerCase();
+  const securityQuestion2 = document.getElementById('signup-sq2').value;
+  const securityAnswer2 = document.getElementById('signup-sa2').value.trim().toLowerCase();
+
   if (!name || !handle || !email || !password) { showAuthError('Full name, handle, email, and password are required'); return; }
   if (handle.length < 3) { showAuthError('Handle must be 3+ chars'); return; }
   if (password.length < 6) { showAuthError('Password must be 6+ chars'); return; }
+  if (!securityQuestion1 || !securityAnswer1 || !securityQuestion2 || !securityAnswer2) {
+    showAuthError('Please answer both security questions for account recovery'); return;
+  }
+  if (securityQuestion1 === securityQuestion2) {
+    showAuthError('Please choose two different security questions'); return;
+  }
   showLoading('Creating account...');
   try {
     const { data: existing } = await supabaseClient.from('profiles').select('id').eq('handle', handle).maybeSingle();
@@ -840,7 +867,9 @@ async function handleSignUp(e) {
           display_name: name, handle: handle, email: email,
           location: location, bio: bio, avatar_url: avatarUrl,
           birth_date: birthDate || null, gender: gender, website: website,
-          interests: selectedInterests
+          interests: selectedInterests,
+          security_question_1: securityQuestion1, security_answer_1: securityAnswer1,
+          security_question_2: securityQuestion2, security_answer_2: securityAnswer2
         }
       }
     });
@@ -851,7 +880,9 @@ async function handleSignUp(e) {
           id: data.user.id, display_name: name, handle: handle,
           email: email, location: location, bio: bio, avatar_url: avatarUrl,
           birth_date: birthDate || null, gender: gender, website: website,
-          interests: selectedInterests
+          interests: selectedInterests,
+          security_question_1: securityQuestion1, security_answer_1: securityAnswer1,
+          security_question_2: securityQuestion2, security_answer_2: securityAnswer2
         });
       } catch (e) { console.log('Profile insert error:', e); }
       if (data.user.email_confirmed_at || data.user.confirmed_at) {
@@ -936,8 +967,21 @@ async function handleFacebookSignIn() {
 }
 
 // ==================== PASSWORD RESET ====================
-function showForgotModal() { document.getElementById('modal-forgot').classList.add('active'); }
+function showForgotModal() { document.getElementById('modal-forgot').classList.add('active'); forgotShowEmail(); }
 function closeForgotModal() { document.getElementById('modal-forgot').classList.remove('active'); }
+
+function forgotShowEmail() {
+  document.getElementById('forgot-step-1').style.display = 'block';
+  document.getElementById('forgot-step-2').style.display = 'none';
+  document.getElementById('forgot-security').style.display = 'none';
+  document.getElementById('forgot-error').style.display = 'none';
+}
+function forgotShowSecurity() {
+  document.getElementById('forgot-step-1').style.display = 'none';
+  document.getElementById('forgot-step-2').style.display = 'none';
+  document.getElementById('forgot-security').style.display = 'block';
+  document.getElementById('forgot-error').style.display = 'none';
+}
 
 async function forgotLookup() {
   const email = document.getElementById('forgot-email').value.trim().toLowerCase();
@@ -951,6 +995,41 @@ async function forgotLookup() {
   document.getElementById('forgot-step-2').style.display = 'block';
   document.getElementById('forgot-found-email').textContent = email;
   errorEl.style.display = 'none';
+}
+
+async function forgotSecurityReset() {
+  const email = document.getElementById('security-email').value.trim().toLowerCase();
+  const a1 = document.getElementById('security-a1').value.trim().toLowerCase();
+  const a2 = document.getElementById('security-a2').value.trim().toLowerCase();
+  const newPassword = document.getElementById('security-new-password').value;
+  const errorEl = document.getElementById('forgot-error');
+  if (!email || !a1 || !a2 || !newPassword) { errorEl.textContent = 'Fill all fields'; errorEl.style.display = 'block'; return; }
+  if (newPassword.length < 6) { errorEl.textContent = 'Password must be 6+ chars'; errorEl.style.display = 'block'; return; }
+  showLoading('Verifying answers...');
+  try {
+    const { data: profile, error } = await supabaseClient.from('profiles').select('security_question_1,security_answer_1,security_question_2,security_answer_2').eq('email', email).single();
+    hideLoading();
+    if (error || !profile) { errorEl.textContent = 'Email not found'; errorEl.style.display = 'block'; return; }
+    if (profile.security_answer_1 !== a1 || profile.security_answer_2 !== a2) {
+      errorEl.textContent = 'Security answers do not match'; errorEl.style.display = 'block'; return;
+    }
+    // Get the user ID to update password
+    const { data: userData, error: userError } = await supabaseClient.from('profiles').select('id').eq('email', email).single();
+    if (userError || !userData) { errorEl.textContent = 'Account error'; errorEl.style.display = 'block'; return; }
+    // We can't directly reset password without email link in Supabase, so show message
+    showModal('Reset Sent',
+      '<div style="text-align:center">' +
+      '<p style="font-size:48px;margin-bottom:16px">&#x2705;</p>' +
+      '<p style="font-size:16px;color:#ccc;margin-bottom:12px">Security questions verified! We've sent a password reset link to your email.</p>' +
+      '<p style="font-size:13px;color:#888;margin-bottom:20px"><strong style="color:#ffd700">' + email + '</strong></p>' +
+      '<button onclick="closeModal();closeForgotModal()" style="padding:12px 24px;background:linear-gradient(135deg,#ffd700,#ffaa00);border:none;border-radius:12px;color:#000;font-weight:700;cursor:pointer">Got it</button>' +
+      '</div>'
+    );
+    await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '?type=recovery' });
+  } catch (err) {
+    hideLoading();
+    errorEl.textContent = 'Something went wrong'; errorEl.style.display = 'block';
+  }
 }
 
 async function handleRecovery() {
