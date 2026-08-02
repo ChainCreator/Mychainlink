@@ -4,35 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Data Deletion — My Chain Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.7;padding:40px 20px;max-width:700px;margin:0 auto}
-h1{font-size:32px;font-weight:700;color:#ffd700;margin-bottom:8px}
-h2{font-size:20px;font-weight:600;color:#ffd700;margin-top:28px;margin-bottom:12px}
-p{margin-bottom:16px;color:#ccc}
-a{color:#ffd700;text-decoration:none}
-a:hover{text-decoration:underline}
-.header{text-align:center;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #222}
-.header img{height:60px;margin-bottom:12px}
-.header p{color:#888;font-size:14px}
-.steps{background:#12121a;border:1px solid #222;border-radius:16px;padding:24px;margin:24px 0}
-.steps ol{padding-left:20px;color:#ccc}
-.steps li{margin-bottom:12px}
-.footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid #222;font-size:13px;color:#666}
-</style>
+<meta name="theme-color" content="#0F0F0F">
+<link rel="icon" href="logo-v3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Figtree:wght@300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
 </head>
 <body>
 
-<div class="header">
+<div class="page narrow">
+
+<header class="masthead">
   <img src="logo-v3.png" alt="My Chain Link">
-  <h1>Data Deletion</h1>
-  <p>Delete your account and all personal data</p>
-</div>
+  <div class="eyebrow">Leaving</div>
+  <h1>Data <em>Deletion</em></h1>
+  <p class="tagline">Take everything with you. Here is exactly what goes, and how to start it.</p>
+</header>
 
 <p>You have the right to request the deletion of your personal data from My Chain Link at any time. When you delete your account, the following happens:</p>
 
-<div class="steps">
+<div class="panel">
   <h2>What gets deleted</h2>
   <ol>
     <li>Your profile information (name, email, bio, location, avatar)</li>
@@ -43,7 +35,7 @@ a:hover{text-decoration:underline}
   </ol>
 </div>
 
-<div class="steps">
+<div class="panel">
   <h2>How to delete your data</h2>
   <ol>
     <li><strong>Sign in</strong> to your My Chain Link account at <a href="https://mychainlink.ca">mychainlink.ca</a></li>
@@ -56,9 +48,18 @@ a:hover{text-decoration:underline}
 <h2>Contact Us</h2>
 <p>If you cannot access your account or need assistance with data deletion, email us at <a href="mailto:privacy@mychainlink.ca">privacy@mychainlink.ca</a> with your registered email address. We will process your request within 30 days.</p>
 
-<div class="footer">
-  <p>&copy; 2026 My Chain Link. All Rights Reserved to Kendal symes.</p>
-  <p style="margin-top:8px"><a href="index.html">&larr; Back to My Chain Link</a></p>
+<footer class="pagefoot">
+  <nav>
+    <a href="index.html">My Chain Link</a>
+    <a href="about.html">About</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+  <span>&copy; 2026 My Chain Link — Kendal Symes</span>
+</footer>
+
+<p style="position:relative;z-index:1;margin-top:26px"><a class="back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to My Chain Link</a></p>
+
 </div>
 
 </body>

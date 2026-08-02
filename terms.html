@@ -4,32 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Terms of Service — My Chain Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.7;padding:40px 20px;max-width:800px;margin:0 auto}
-h1{font-size:32px;font-weight:700;color:#ffd700;margin-bottom:8px}
-h2{font-size:20px;font-weight:600;color:#ffd700;margin-top:32px;margin-bottom:12px}
-p{margin-bottom:16px;color:#ccc}
-ul{margin-bottom:16px;padding-left:24px;color:#ccc}
-li{margin-bottom:8px}
-a{color:#ffd700;text-decoration:none}
-a:hover{text-decoration:underline}
-.header{text-align:center;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #222}
-.header img{height:60px;margin-bottom:12px}
-.header p{color:#888;font-size:14px}
-.footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid #222;font-size:13px;color:#666}
-.last-updated{display:inline-block;background:#1a1a2e;border:1px solid #333;padding:4px 12px;border-radius:8px;font-size:12px;color:#888;margin-top:8px}
-</style>
+<meta name="theme-color" content="#0F0F0F">
+<link rel="icon" href="logo-v3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Figtree:wght@300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
 </head>
 <body>
 
-<div class="header">
+<div class="page">
+
+<header class="masthead">
   <img src="logo-v3.png" alt="My Chain Link">
-  <h1>Terms of Service</h1>
-  <p>The rules of the chain. Read them. Respect them.</p>
-  <div class="last-updated">Last updated: July 27, 2026</div>
-</div>
+  <div class="eyebrow">The agreement</div>
+  <h1>Terms of <em>Service</em></h1>
+  <p class="tagline">The rules of the chain — written plainly, meant to be read once and remembered.</p>
+  <div class="stamp">Last updated July 27, 2026</div>
+</header>
 
 <p><strong>My Chain Link</strong> (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) provides the website <a href="https://mychainlink.ca">mychainlink.ca</a> and the My Chain Link mobile web application (collectively, the &ldquo;Service&rdquo;). By accessing or using the Service, you agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;).</p>
 
@@ -103,9 +95,18 @@ a:hover{text-decoration:underline}
 <p><strong>Email:</strong> <a href="mailto:legal@mychainlink.ca">legal@mychainlink.ca</a><br>
 <strong>Website:</strong> <a href="https://mychainlink.ca">mychainlink.ca</a></p>
 
-<div class="footer">
-  <p>&copy; 2026 My Chain Link. All Rights Reserved to Kendal symes.</p>
-  <p style="margin-top:8px"><a href="index.html">&larr; Back to My Chain Link</a></p>
+<footer class="pagefoot">
+  <nav>
+    <a href="index.html">My Chain Link</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="data-deletion.html">Data deletion</a>
+  </nav>
+  <span>&copy; 2026 My Chain Link — Kendal Symes</span>
+</footer>
+
+<p style="position:relative;z-index:1;margin-top:26px"><a class="back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to My Chain Link</a></p>
+
 </div>
 
 </body>
