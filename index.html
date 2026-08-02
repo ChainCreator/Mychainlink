@@ -1343,10 +1343,6 @@ window.showAuth = function(tab) {
         <span class="sl">Notifications</span>
         <div class="toggle on" id="t-not" onclick="tNot()"></div>
       </div>
-      <div class="s-item">
-        <span class="sl">Dark Mode</span>
-        <div class="toggle on" id="t-dm" onclick="tDm()"></div>
-      </div>
     </div>
     <div class="s-group">
       <h3>Account</h3>
@@ -2102,7 +2098,6 @@ window.savePw=function(){var p1=$('pw1').value,p2=$('pw2').value,er=$('pw-er');v
 window.tCmt=function(){$('t-cmt').classList.toggle('on');settings.comments=$('t-cmt').classList.contains('on');svs()};
 window.tSubOnly=function(){$('t-subonly').classList.toggle('on');settings.subOnly=$('t-subonly').classList.contains('on');svs()};
 window.tNot=function(){$('t-not').classList.toggle('on');settings.notifs=$('t-not').classList.contains('on');svs()};
-window.tDm=function(){$('t-dm').classList.toggle('on');settings.dark=$('t-dm').classList.contains('on');svs()};
 window.delAccountModal=function(){$('m-del').classList.add('on')};
 window.delAccount=function(){var confirm=$('del-confirm').value.trim();if(confirm!=='DELETE'){showToast('Type DELETE to confirm');return}if(sb)sb.auth.signOut();localStorage.clear();cu=null;posts=[];location.reload()};
 
