@@ -1,335 +1,241 @@
 -- ============================================================
 -- MYCHAINLINK COMPLETE SCHEMA — PASTE INTO SUPABASE SQL EDITOR
--- Safe to run multiple times. Run this AFTER creating the project.
+-- Run this AFTER creating the project.
 -- ============================================================
 
 -- ============================================================
 -- 1. PROFILES
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.profiles (
-      id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-      display_name text NOT NULL DEFAULT 'User',
-      handle text UNIQUE,
-      email text DEFAULT '',
-      bio text DEFAULT '',
-      avatar_url text DEFAULT '',
-      location text DEFAULT '',
-      birth_date date DEFAULT NULL,
-      gender text DEFAULT '',
-      website text DEFAULT '',
-      interests text[] DEFAULT '{}',
-      is_premium boolean DEFAULT false,
-      is_creator boolean DEFAULT false,
-      paypal_email text DEFAULT '',
-      stripe_account_id text DEFAULT '',
-      created_at timestamptz DEFAULT now(),
-      updated_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'profiles table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    display_name text NOT NULL DEFAULT 'User',
+    handle text UNIQUE,
+    email text DEFAULT '',
+    bio text DEFAULT '',
+    avatar_url text DEFAULT '',
+    location text DEFAULT '',
+    birth_date date DEFAULT NULL,
+    gender text DEFAULT '',
+    website text DEFAULT '',
+    interests text[] DEFAULT '{}',
+    is_premium boolean DEFAULT false,
+    is_creator boolean DEFAULT false,
+    paypal_email text DEFAULT '',
+    stripe_account_id text DEFAULT '',
+    created_at timestamptz DEFAULT now(),
+    updated_at timestamptz DEFAULT now()
+);
 
--- Add missing columns (safe for re-runs)
-DO $$
-BEGIN
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email text DEFAULT '';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS location text DEFAULT '';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS birth_date date DEFAULT NULL;
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS gender text DEFAULT '';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS website text DEFAULT '';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS interests text[] DEFAULT '{}';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_premium boolean DEFAULT false;
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_creator boolean DEFAULT false;
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS paypal_email text DEFAULT '';
-  ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS stripe_account_id text DEFAULT '';
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'columns may already exist: %', SQLERRM;
-END $$;
+-- Add missing columns if table already existed
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email text DEFAULT '';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS location text DEFAULT '';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS birth_date date DEFAULT NULL;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS gender text DEFAULT '';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS website text DEFAULT '';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS interests text[] DEFAULT '{}';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_premium boolean DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_creator boolean DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS paypal_email text DEFAULT '';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS stripe_account_id text DEFAULT '';
 
--- Make handle nullable if it was created as NOT NULL in a prior run
-DO $$
-BEGIN
-  ALTER TABLE public.profiles ALTER COLUMN handle DROP NOT NULL;
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'handle column already nullable: %', SQLERRM;
-END $$;
+-- Make handle nullable (in case it was created NOT NULL before)
+ALTER TABLE public.profiles ALTER COLUMN handle DROP NOT NULL;
 
 -- ============================================================
 -- 2. POSTS
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.posts (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      content text NOT NULL DEFAULT '',
-      media_url text DEFAULT '',
-      media_type text DEFAULT 'none',
-      is_camera_only boolean DEFAULT true,
-      has_comments boolean DEFAULT true,
-      is_premium_only boolean DEFAULT false,
-      price decimal(10,2) DEFAULT 0,
-      tags text[] DEFAULT '{}',
-      location text DEFAULT '',
-      font text DEFAULT 'default',
-      likes_count integer DEFAULT 0,
-      comments_count integer DEFAULT 0,
-      created_at timestamptz DEFAULT now(),
-      updated_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'posts table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.posts (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    content text NOT NULL DEFAULT '',
+    media_url text DEFAULT '',
+    media_type text DEFAULT 'none',
+    is_camera_only boolean DEFAULT true,
+    has_comments boolean DEFAULT true,
+    is_premium_only boolean DEFAULT false,
+    price decimal(10,2) DEFAULT 0,
+    tags text[] DEFAULT '{}',
+    location text DEFAULT '',
+    font text DEFAULT 'default',
+    likes_count integer DEFAULT 0,
+    comments_count integer DEFAULT 0,
+    created_at timestamptz DEFAULT now(),
+    updated_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- 3. LIKES
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.likes (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      post_id uuid NOT NULL,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      created_at timestamptz DEFAULT now(),
-      UNIQUE(post_id, user_id)
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'likes table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.likes (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id uuid NOT NULL,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    created_at timestamptz DEFAULT now(),
+    UNIQUE(post_id, user_id)
+);
 
 -- ============================================================
 -- 4. COMMENTS
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.comments (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      post_id uuid NOT NULL,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      content text NOT NULL DEFAULT '',
-      created_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'comments table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.comments (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id uuid NOT NULL,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    content text NOT NULL DEFAULT '',
+    created_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- 5. FOLLOWS (Connects)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.follows (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      follower_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      following_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      subscribed boolean DEFAULT false,
-      subscription_expires_at timestamptz DEFAULT NULL,
-      created_at timestamptz DEFAULT now(),
-      UNIQUE(follower_id, following_id)
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'follows table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.follows (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    follower_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    following_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    subscribed boolean DEFAULT false,
+    subscription_expires_at timestamptz DEFAULT NULL,
+    created_at timestamptz DEFAULT now(),
+    UNIQUE(follower_id, following_id)
+);
 
 -- ============================================================
 -- 6. CONVERSATIONS (DMs)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.conversations (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      participant_1 uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      participant_2 uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      last_message_at timestamptz DEFAULT now(),
-      created_at timestamptz DEFAULT now(),
-      UNIQUE(participant_1, participant_2)
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'conversations table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.conversations (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    participant_1 uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    participant_2 uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    last_message_at timestamptz DEFAULT now(),
+    created_at timestamptz DEFAULT now(),
+    UNIQUE(participant_1, participant_2)
+);
 
 -- ============================================================
 -- 7. MESSAGES
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.messages (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      conversation_id uuid NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,
-      sender_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      content text NOT NULL DEFAULT '',
-      media_url text DEFAULT '',
-      media_type text DEFAULT 'text',
-      is_read boolean DEFAULT false,
-      created_at timestamptz DEFAULT now(),
-      updated_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'messages table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.messages (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    conversation_id uuid NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,
+    sender_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    content text NOT NULL DEFAULT '',
+    media_url text DEFAULT '',
+    media_type text DEFAULT 'text',
+    is_read boolean DEFAULT false,
+    created_at timestamptz DEFAULT now(),
+    updated_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- 8. NOTIFICATIONS
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.notifications (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      type text NOT NULL,
-      actor_id uuid NOT NULL,
-      reference_id uuid DEFAULT NULL,
-      reference_type text DEFAULT '',
-      is_read boolean DEFAULT false,
-      created_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'notifications table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    type text NOT NULL,
+    actor_id uuid NOT NULL,
+    reference_id uuid DEFAULT NULL,
+    reference_type text DEFAULT '',
+    is_read boolean DEFAULT false,
+    created_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- 9. LIVE STREAMS
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.live_streams (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      title text DEFAULT 'Live Stream',
-      is_active boolean DEFAULT true,
-      viewer_count integer DEFAULT 0,
-      room_id text DEFAULT '',
-      started_at timestamptz DEFAULT now(),
-      ended_at timestamptz DEFAULT NULL
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'live_streams table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.live_streams (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    title text DEFAULT 'Live Stream',
+    is_active boolean DEFAULT true,
+    viewer_count integer DEFAULT 0,
+    room_id text DEFAULT '',
+    started_at timestamptz DEFAULT now(),
+    ended_at timestamptz DEFAULT NULL
+);
 
 -- ============================================================
 -- 10. STORIES (24h Ephemeral)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.stories (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      media_url text NOT NULL DEFAULT '',
-      media_type text DEFAULT 'image',
-      caption text DEFAULT '',
-      viewed_by uuid[] DEFAULT '{}',
-      created_at timestamptz DEFAULT now(),
-      expires_at timestamptz DEFAULT (now() + interval '24 hours')
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'stories table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.stories (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    media_url text NOT NULL DEFAULT '',
+    media_type text DEFAULT 'image',
+    caption text DEFAULT '',
+    viewed_by uuid[] DEFAULT '{}',
+    created_at timestamptz DEFAULT now(),
+    expires_at timestamptz DEFAULT (now() + interval '24 hours')
+);
 
 -- ============================================================
 -- 11. REPORTS (Moderation)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.reports (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      reporter_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      reported_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      report_type text NOT NULL DEFAULT 'user',
-      reason text NOT NULL DEFAULT '',
-      status text DEFAULT 'pending',
-      created_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'reports table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.reports (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    reporter_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    reported_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    report_type text NOT NULL DEFAULT 'user',
+    reason text NOT NULL DEFAULT '',
+    status text DEFAULT 'pending',
+    created_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- 12. BLOCKS
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.blocks (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      blocker_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      blocked_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      created_at timestamptz DEFAULT now(),
-      UNIQUE(blocker_id, blocked_id)
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'blocks table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.blocks (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    blocker_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    blocked_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    created_at timestamptz DEFAULT now(),
+    UNIQUE(blocker_id, blocked_id)
+);
 
 -- ============================================================
 -- 13. SUBSCRIPTIONS (Premium Payments)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.subscriptions (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      subscriber_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      creator_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      status text DEFAULT 'active',
-      amount decimal(10,2) DEFAULT 0,
-      payment_method text DEFAULT 'paypal',
-      started_at timestamptz DEFAULT now(),
-      expires_at timestamptz DEFAULT (now() + interval '30 days'),
-      UNIQUE(subscriber_id, creator_id)
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'subscriptions table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.subscriptions (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    subscriber_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    creator_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    status text DEFAULT 'active',
+    amount decimal(10,2) DEFAULT 0,
+    payment_method text DEFAULT 'paypal',
+    started_at timestamptz DEFAULT now(),
+    expires_at timestamptz DEFAULT (now() + interval '30 days'),
+    UNIQUE(subscriber_id, creator_id)
+);
 
 -- ============================================================
 -- 14. MEDIA_UPLOADS (Track files in Storage)
 -- ============================================================
-DO $$
-BEGIN
-  CREATE TABLE IF NOT EXISTS public.media_uploads (
-      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-      file_path text NOT NULL DEFAULT '',
-      file_type text DEFAULT 'image',
-      file_size integer DEFAULT 0,
-      url text DEFAULT '',
-      created_at timestamptz DEFAULT now()
-  );
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'media_uploads table may already exist: %', SQLERRM;
-END $$;
+CREATE TABLE IF NOT EXISTS public.media_uploads (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    file_path text NOT NULL DEFAULT '',
+    file_type text DEFAULT 'image',
+    file_size integer DEFAULT 0,
+    url text DEFAULT '',
+    created_at timestamptz DEFAULT now()
+);
 
 -- ============================================================
 -- ENABLE ROW LEVEL SECURITY (RLS)
 -- ============================================================
-DO $$ BEGIN ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'profiles RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'posts RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'likes RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'comments RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'follows RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'conversations RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'messages RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'notifications RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.live_streams ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'live_streams RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.stories ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'stories RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'reports RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.blocks ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'blocks RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'subscriptions RLS: %', SQLERRM; END $$;
-DO $$ BEGIN ALTER TABLE public.media_uploads ENABLE ROW LEVEL SECURITY;
-EXCEPTION WHEN OTHERS THEN RAISE NOTICE 'media_uploads RLS: %', SQLERRM; END $$;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.live_streams ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.stories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.media_uploads ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- RLS POLICIES
@@ -544,7 +450,6 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_handle text;
 BEGIN
-  -- Generate a unique handle from user ID
   v_handle := '@user' || substr(NEW.id::text, 1, 8);
 
   INSERT INTO public.profiles (
@@ -568,9 +473,6 @@ BEGIN
   ON CONFLICT (id) DO NOTHING;
 
   RETURN NEW;
-EXCEPTION WHEN OTHERS THEN
-  RAISE NOTICE 'Profile creation error: %', SQLERRM;
-  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -581,6 +483,5 @@ CREATE TRIGGER on_auth_user_created
     EXECUTE FUNCTION public.handle_new_user();
 
 -- ============================================================
--- DONE! Check the Output tab for any notices.
--- Yellow warnings are OK — they mean things already exist.
+-- DONE!
 -- ============================================================
