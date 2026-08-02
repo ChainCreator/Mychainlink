@@ -2,43 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Delete Account - My Chain Link</title>
-<style>
-body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;max-width:600px;margin:40px auto;padding:20px;line-height:1.6}
-h1{color:#ffd700;font-size:24px;margin-bottom:16px}
-.delete-btn{background:#ff4444;color:#fff;border:none;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px}
-.delete-btn:hover{background:#ff2222}
-.cancel-btn{background:#1a1a2e;color:#e0e0e0;border:1px solid #333;padding:14px 28px;border-radius:12px;font-size:16px;cursor:pointer;margin-left:12px}
-.warning{color:#ff4444;font-weight:600}
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delete Account — My Chain Link</title>
+<meta name="description" content="How to permanently delete your My Chain Link account and everything attached to it.">
+<meta name="theme-color" content="#0F0F0F">
+<link rel="icon" href="logo-v3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Figtree:wght@300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
 </head>
 <body>
-<h1>&#x1F5D1; Delete Your Account</h1>
-<p>We respect your right to control your data. You can delete your My Chain Link account at any time.</p>
-<p class="warning">Warning: This action is permanent and cannot be undone.</p>
-<p>Deleting your account will remove:</p>
-<ul>
-<li>Your profile and personal information</li>
-<li>All your posts, photos, and videos</li>
-<li>All your comments and likes</li>
-<li>Your messages and connections</li>
-<li>Your subscription and payment data</li>
-</ul>
 
-<h3>How to Delete Your Account:</h3>
-<ol>
-<li>Sign in to your My Chain Link account</li>
-<li>Go to <strong>Settings</strong></li>
-<li>Tap <strong>Delete Account</strong></li>
-<li>Enter your password to confirm</li>
-</ol>
+<div class="page narrow">
 
-<p>Your data will be permanently removed from our servers within 30 days.</p>
+<header class="masthead">
+  <img src="logo-v3.png" alt="My Chain Link">
+  <div class="eyebrow">Account</div>
+  <h1>Delete your <em>account</em></h1>
+  <p class="tagline">It is your data. You can take all of it off our servers whenever you want, and we will not make you argue with a chatbot first.</p>
+</header>
 
-<p><a href="https://mychainlink.ca" style="color:#ffd700">&larr; Back to My Chain Link</a></p>
+<p class="danger">This is permanent. Once it is done there is nothing to restore.</p>
 
-<p style="margin-top:40px;font-size:12px;color:#666">My Chain Link &copy; All rights reserved to Kendal Symes</p>
+<div class="panel warn">
+  <h3>What gets removed</h3>
+  <ul>
+    <li>Your profile and personal details — name, email, birthday, bio, location, avatar</li>
+    <li>Every post, photo, and video you made</li>
+    <li>Your comments, reactions, and messages</li>
+    <li>Your links and follower relationships</li>
+    <li>Your subscription and payout details</li>
+    <li>Your login credentials, security answers, and two-step PIN</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h3>How to do it</h3>
+  <ol>
+    <li>Sign in to your account at <a href="https://mychainlink.ca">mychainlink.ca</a></li>
+    <li>Open <strong>Settings</strong> from the bottom navigation</li>
+    <li>Choose <strong>Delete Account</strong></li>
+    <li>Enter your password to confirm</li>
+  </ol>
+</div>
+
+<p>The account disappears from the app immediately. Everything behind it is wiped from our servers within 30 days.</p>
+
+<p class="note">Locked out of your account? Email <a href="mailto:privacy@mychainlink.ca">privacy@mychainlink.ca</a> from the address you signed up with and we will handle it for you.</p>
+
+<div class="btn-row">
+  <a class="btn btn-danger" href="https://mychainlink.ca">Sign in and delete</a>
+  <a class="btn btn-ghost" href="data-deletion.html">Read the full policy</a>
+</div>
+
+<footer class="pagefoot">
+  <nav>
+    <a href="index.html">My Chain Link</a>
+    <a href="about.html">About</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+  <span>&copy; 2026 My Chain Link — Kendal Symes</span>
+</footer>
+
+<p style="position:relative;z-index:1;margin-top:26px"><a class="back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to My Chain Link</a></p>
+
+</div>
+
 </body>
 </html>

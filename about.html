@@ -4,95 +4,106 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>About — My Chain Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.7;padding:40px 20px;max-width:800px;margin:0 auto}
-h1{font-size:32px;font-weight:700;color:#ffd700;margin-bottom:8px}
-h2{font-size:20px;font-weight:600;color:#ffd700;margin-top:32px;margin-bottom:12px}
-p{margin-bottom:16px;color:#ccc}
-ul{margin-bottom:16px;padding-left:24px;color:#ccc}
-li{margin-bottom:8px}
-a{color:#ffd700;text-decoration:none}
-a:hover{text-decoration:underline}
-.header{text-align:center;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #222}
-.header img{height:60px;margin-bottom:12px}
-.header p{color:#888;font-size:14px}
-.footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid #222;font-size:13px;color:#666}
-.last-updated{display:inline-block;background:#1a1a2e;border:1px solid #333;padding:4px 12px;border-radius:8px;font-size:12px;color:#888;margin-top:8px}
-.mission{background:#1a1a2e;border:1px solid #333;border-radius:16px;padding:24px;margin:24px 0;text-align:center}
-.mission p{font-size:16px;color:#e0e0e0;font-style:italic;margin:0}
-</style>
+<meta name="description" content="My Chain Link is a camera-first social platform: real moments, direct messaging, and creator payouts that skip the middleman.">
+<meta name="theme-color" content="#0F0F0F">
+<link rel="icon" href="logo-v3.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Figtree:wght@300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
 </head>
 <body>
 
-<div class="header">
+<div class="page">
+
+<header class="masthead">
   <img src="logo-v3.png" alt="My Chain Link">
-  <h1>About My Chain Link</h1>
-  <p>Get connected. Stay connected.</p>
+  <div class="eyebrow">About</div>
+  <h1>Get connected.<br><em>Stay connected.</em></h1>
+  <p class="tagline">A social platform built around the moment you are actually in — not the one you spent an hour editing.</p>
+</header>
+
+<div class="pull">
+  <p>Authenticity matters more than the algorithm, and the people making the work keep what they earn.</p>
+  <cite>Why we built this</cite>
 </div>
 
-<div class="mission">
-  <p>"A social platform where authenticity matters more than algorithms, and creators keep what they earn."</p>
+<h2>What My Chain Link is</h2>
+<p>My Chain Link is a social network for real connections. Most platforms reward the highlight reel: the retouched photo, the third take, the post timed for peak engagement. We went the other way. Everything you post here is captured live through your camera, right when it happens.</p>
+<p>What that gives you:</p>
+<ul>
+  <li><strong>Real posts.</strong> Camera-only capture — no gallery uploads, no filter stack, no month-old photo passed off as today.</li>
+  <li><strong>Direct contact.</strong> Free messaging and video calling between people in your chain.</li>
+  <li><strong>Money that reaches you.</strong> Subscription pricing you set yourself, paid out straight to PayPal.</li>
+  <li><strong>Your own audience.</strong> A chronological chain, not a feed reordered by a ranking model.</li>
+</ul>
+
+<h2>What is inside</h2>
+<ul>
+  <li><strong>Camera-first posting</strong> — every post is captured in the moment, so what you see actually happened.</li>
+  <li><strong>Messaging</strong> — free text and media between connected accounts.</li>
+  <li><strong>Live streaming</strong> — broadcast in real time with chat running alongside.</li>
+  <li><strong>Video calls</strong> — encrypted peer-to-peer, no third party in the middle.</li>
+  <li><strong>Creator paywalls</strong> — lock a single post or a whole profile, at a price you choose.</li>
+  <li><strong>Music</strong> — share what you are listening to through Spotify.</li>
+</ul>
+
+<h2>How it works</h2>
+<p>Sign up with an email address, Google, or Facebook. From there:</p>
+<ol>
+  <li>Build your profile — photo, bio, location, and your birthday for the badge on your day.</li>
+  <li>Post to your chain straight from the camera.</li>
+  <li>Find people worth following and link up.</li>
+  <li>Message them, call them, keep the thread going.</li>
+  <li>Subscribe to creators whose work you want more of.</li>
+</ol>
+
+<h2>Security and privacy</h2>
+<p>The account protections we run:</p>
+<ul>
+  <li>Encrypted transport on every request (HTTPS/TLS)</li>
+  <li>Authentication through Supabase Auth</li>
+  <li>Row-level security on every database table</li>
+  <li>A 12-character password floor, plus two security questions stored only as hashes</li>
+  <li>Optional two-step PIN on your account</li>
+  <li>Full account deletion with nothing retained afterwards</li>
+</ul>
+<p class="note">Your birth year is used to confirm you are 13 or older and is never shown to anyone else. Other people only ever see the day and month.</p>
+
+<h2>How creators get paid</h2>
+<p>Creators earn from subscriber-only posts and subscriber-only profiles:</p>
+<ul>
+  <li>You set the price — there is no house rate</li>
+  <li>PayPal payouts, no waiting on a minimum balance</li>
+  <li>No revenue threshold before you can withdraw</li>
+  <li>Lock content at the post level or the profile level, whichever fits</li>
+</ul>
+
+<h2>Reach us</h2>
+<dl class="rows">
+  <div class="row"><dt>Feedback</dt><dd><a href="mailto:feedback@mychainlink.ca">feedback@mychainlink.ca</a></dd></div>
+  <div class="row"><dt>Privacy</dt><dd><a href="mailto:privacy@mychainlink.ca">privacy@mychainlink.ca</a></dd></div>
+  <div class="row"><dt>Legal</dt><dd><a href="mailto:legal@mychainlink.ca">legal@mychainlink.ca</a></dd></div>
+  <div class="row"><dt>Website</dt><dd><a href="https://mychainlink.ca">mychainlink.ca</a></dd></div>
+</dl>
+
+<div class="btn-row">
+  <a class="btn btn-primary" href="index.html">Join the chain</a>
+  <a class="btn btn-ghost" href="privacy.html">Read the privacy policy</a>
 </div>
 
-<h2>What Is My Chain Link?</h2>
-<p>My Chain Link is a social networking platform designed for authentic connections. Unlike traditional social media that prioritizes curated highlight reels, My Chain Link focuses on real-time, camera-captured content that reflects genuine moments.</p>
-<p>The platform enables users to:</p>
-<ul>
-  <li><strong>Share authentic content</strong> through camera-only posting — no filtered gallery uploads</li>
-  <li><strong>Connect directly</strong> with free messaging and video calling</li>
-  <li><strong>Monetize content</strong> through flexible subscription models with direct PayPal payouts</li>
-  <li><strong>Maintain control</strong> over their audience without algorithmic interference</li>
-</ul>
+<footer class="pagefoot">
+  <nav>
+    <a href="index.html">My Chain Link</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="data-deletion.html">Data deletion</a>
+  </nav>
+  <span>&copy; 2026 My Chain Link — Kendal Symes</span>
+</footer>
 
-<h2>Platform Features</h2>
-<ul>
-  <li><strong>Camera-First Content:</strong> All posts are captured in real-time through the device camera, ensuring content authenticity</li>
-  <li><strong>Direct Messaging:</strong> Free text and media messaging between connected users</li>
-  <li><strong>Live Streaming:</strong> Real-time broadcasting with integrated chat functionality</li>
-  <li><strong>Video Calling:</strong> Encrypted peer-to-peer video communication</li>
-  <li><strong>Creator Monetization:</strong> Flexible paywall options allowing creators to set their own pricing</li>
-  <li><strong>Music Integration:</strong> Spotify sharing to connect through music</li>
-</ul>
+<p style="position:relative;z-index:1;margin-top:26px"><a class="back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Back to My Chain Link</a></p>
 
-<h2>How It Works</h2>
-<p>Users create accounts via email, Google, or Facebook authentication. Once registered, they can:</p>
-<ul>
-  <li>Build a profile with bio, location, and profile photo</li>
-  <li>Post camera-captured content to their feed</li>
-  <li>Discover and connect with other users</li>
-  <li>Exchange messages and video calls</li>
-  <li>Subscribe to premium content from creators</li>
-</ul>
-
-<h2>Security & Privacy</h2>
-<p>My Chain Link implements industry-standard security measures:</p>
-<ul>
-  <li>Encrypted data transmission (HTTPS/TLS)</li>
-  <li>Secure authentication via Supabase Auth</li>
-  <li>Row-level security policies on all database tables</li>
-  <li>Two-factor authentication support</li>
-  <li>Complete account deletion with zero data retention</li>
-</ul>
-
-<h2>Monetization Model</h2>
-<p>Creators can monetize their content through subscriber-only posts and profiles. Key features include:</p>
-<ul>
-  <li>Creator-defined pricing for premium content</li>
-  <li>Direct PayPal integration for instant payouts</li>
-  <li>No platform-imposed revenue thresholds</li>
-  <li>Flexible content locking at post or profile level</li>
-</ul>
-
-<h2>Contact</h2>
-<p>For inquiries, support, or partnership opportunities:</p>
-<p><strong>Email:</strong> <a href="mailto:feedback@mychainlink.ca">feedback@mychainlink.ca</a><br>
-<strong>Website:</strong> <a href="https://mychainlink.ca">mychainlink.ca</a></p>
-
-<div class="footer">
-  <p>&copy; 2026 My Chain Link. All Rights Reserved.</p>
-  <p style="margin-top:8px"><a href="index.html">&larr; Back to My Chain Link</a></p>
 </div>
 
 </body>
