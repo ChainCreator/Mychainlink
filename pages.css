@@ -8,9 +8,9 @@
 :root{
   color-scheme:dark;
   --bg:#0F0F0F; --bg-soft:#131211; --surf:#171614; --surf-2:#1E1C19; --surf-3:#26231F;
-  --line:#272522; --line-warm:rgba(212,184,106,.16);
-  --gold:#D4B86A; --gold-hi:#E8D574; --gold-deep:#C4A35A;
-  --gold-wash:rgba(212,184,106,.07); --gold-edge:rgba(212,184,106,.22);
+  --line:#272522; --line-warm:rgba(230,201,106,.18);
+  --gold:#E6C96A; --gold-hi:#F2DFA0; --gold-deep:#C9A243;
+  --gold-wash:rgba(230,201,106,.08); --gold-edge:rgba(230,201,106,.28);
   --ink:#F3F0EA; --ink-2:#A9A296; --ink-3:#726C63; --ink-4:#4A4640;
   --red:#FF3366; --green:#5FD09A;
   --r-sm:11px; --r:15px; --r-lg:20px; --r-xl:26px; --r-pill:999px;
@@ -41,9 +41,9 @@ body{
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(900px 520px at 12% -8%,rgba(212,184,106,.10),transparent 62%),
-    radial-gradient(700px 480px at 96% 12%,rgba(196,163,90,.055),transparent 60%),
-    radial-gradient(800px 600px at 46% 108%,rgba(212,184,106,.05),transparent 64%),
+    radial-gradient(900px 520px at 12% -8%,rgba(230,201,106,.11),transparent 62%),
+    radial-gradient(700px 480px at 96% 12%,rgba(201,162,67,.065),transparent 60%),
+    radial-gradient(800px 600px at 46% 108%,rgba(230,201,106,.055),transparent 64%),
     var(--bg);
 }
 body::after{
@@ -72,7 +72,7 @@ body::after{
 }
 .masthead img{
   height:70px;width:auto;display:block;margin-bottom:20px;
-  filter:drop-shadow(0 6px 22px rgba(212,184,106,.24));
+  filter:drop-shadow(0 6px 22px rgba(230,201,106,.26));
 }
 .eyebrow{
   display:inline-flex;align-items:center;gap:8px;
@@ -81,7 +81,7 @@ body::after{
 }
 .eyebrow::before{
   content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 0 3px rgba(212,184,106,.14);
+  box-shadow:0 0 0 3px rgba(230,201,106,.15);
 }
 h1{
   font-family:var(--font-d);
@@ -227,11 +227,11 @@ a:focus-visible{
 .btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .btn-primary{
   background:linear-gradient(140deg,var(--gold-hi),var(--gold-deep));
-  color:#100E0B;box-shadow:0 8px 26px rgba(212,184,106,.2);
+  color:#100E0B;box-shadow:0 8px 26px rgba(230,201,106,.22);
 }
 .btn-primary:hover{
   color:#100E0B;transform:translateY(-2px);
-  box-shadow:0 14px 34px rgba(212,184,106,.3);border-bottom-color:transparent;
+  box-shadow:0 14px 34px rgba(230,201,106,.32);border-bottom-color:transparent;
 }
 .btn-ghost{
   background:var(--surf-2);border-color:var(--line);color:var(--ink);
