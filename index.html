@@ -168,16 +168,15 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
   font-weight:400;letter-spacing:.01em;text-transform:none;
 }
 .auth-banner{
-  position:relative;max-width:400px;width:100%;margin:0 auto 22px;padding:15px 18px;
+  position:relative;width:min(100%,400px);margin:0 auto 22px;padding:7px 16px;
   background:linear-gradient(140deg,rgba(230,201,106,.09),rgba(230,201,106,.03));
-  border:1px solid var(--line-warm);border-radius:var(--r-lg);text-align:center;overflow:hidden;
+  border:1px solid var(--line-warm);border-radius:var(--r-pill);text-align:center;overflow:hidden;
 }
 .auth-banner::after{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;
   background:linear-gradient(100deg,transparent,rgba(230,201,106,.10),transparent);
   animation:sheen 6.5s var(--ease) infinite}
 @keyframes sheen{0%,72%{transform:translateX(0)}100%{transform:translateX(360%)}}
-.auth-banner .no-filters{font-size:12px;font-weight:800;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.14em}
-.auth-banner .sub{font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.auth-banner .no-filters{font-size:11px;line-height:1.35;font-weight:800;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.14em;white-space:nowrap}
 
 .auth-box{
   width:100%;max-width:400px;background:linear-gradient(180deg,var(--surf-2),var(--surf));
@@ -648,7 +647,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
 
 /* === RESPONSIVE ============================================= */
 @media(max-width:400px){
+  .auth-container{padding-inline:16px}
   .auth-logo img{width:148px}
+  .auth-banner{padding-inline:12px}
+  .auth-banner .no-filters{font-size:10px;letter-spacing:.11em}
   .auth-box{padding:22px 18px 24px}
   .auth-form h2{font-size:24px}
   .fg-split{grid-template-columns:1fr}
@@ -837,8 +839,7 @@ window.showAuth = function(tab) {
     <div class="tag">Get connected. Stay connected.</div>
   </div>
   <div class="auth-banner">
-    <div class="no-filters">No filters · No gallery uploads</div>
-    <div class="sub">Camera captures only. Real people, real moments.</div>
+    <div class="no-filters">No filters • No gallery uploads</div>
   </div>
   <div class="auth-box">
     <div class="auth-tabs" role="tablist">
