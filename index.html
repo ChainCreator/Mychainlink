@@ -331,6 +331,16 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
 }
 .notif-drop .n-item:last-child{margin-bottom:0}
 .notif-drop .n-item:hover{background:var(--surf-3);transform:translateX(2px)}
+
+/* === MENU DROPDOWN ========================================== */
+.menu-drop{position:fixed;top:60px;right:10px;z-index:99;display:none;background:var(--surf-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:10px;min-width:220px;box-shadow:var(--sh-3)}
+.menu-drop.on{display:block;animation:rise .3s var(--ease-out) both}
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r);cursor:pointer;font-size:14px;color:var(--ink);transition:background .2s}
+.menu-item:hover{background:var(--bg-soft)}
+.menu-item svg{color:var(--ink-3);flex-shrink:0}
+.menu-item.menu-danger{color:#FF3366}
+.menu-item.menu-danger svg{color:#FF3366}
+.menu-sep{height:1px;background:var(--line);margin:8px 0}
 .notif-drop .n-item .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(145deg,var(--gold-hi),var(--gold-deep));display:flex;align-items:center;justify-content:center;font-weight:800;color:#14120E;flex-shrink:0}
 .notif-drop .time{font-size:11.5px;color:var(--ink-3)}
 
@@ -1171,9 +1181,20 @@ window.showAuth = function(tab) {
 <div id="ma">
   <div class="topbar">
     <div style="font-weight:700;font-size:16px;letter-spacing:-0.02em"><span style="color:#FFD700">My</span><span style="color:#E8E8E8">Chain</span><span style="color:#FFD700">Link</span></div>
-    <div class="nav-chain" onclick="toggleNotif()" id="notif-btn">🔗<span id="ni" style="display:none;color:#FFD700;font-size:10px"></span></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nav-chain" onclick="toggleMenu()" id="menu-btn">☰</div>
+      <div class="nav-chain" onclick="toggleNotif()" id="notif-btn">🔗<span id="ni" style="display:none;color:#FFD700;font-size:10px"></span></div>
+    </div>
   </div>
-  <div class="notif-drop" id="notif-drop"></div>
+  <div class="menu-drop" id="menu-drop">
+    <div class="menu-item" onclick="navTo('profile');toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</div>
+    <div class="menu-item" onclick="navTo('settings');toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</div>
+    <div class="menu-item" onclick="shareApp();toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m15.41 6.51-6.82 3.98"/></svg> Share</div>
+    <div class="menu-item" onclick="showAbout();toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> About Us</div>
+    <div class="menu-item" onclick="showHelp();toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Need Help?</div>
+    <div class="menu-sep"></div>
+    <div class="menu-item menu-danger" onclick="lo();toggleMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg> Sign Out</div>
+  </div>
 
   <!-- FEED -->
   <div class="page active" id="pg-feed">
@@ -2047,7 +2068,11 @@ window.navTo=function(p){var map=['feed','people','cam','messages','profile'];va
 function goBackFromUser(){if(cp==='people'){navTo('people')}else{navTo('feed')}}window.goBackFromUser=goBackFromUser;
 
 // ==================== NOTIFICATIONS PULLDOWN ====================
-window.toggleNotif=function(){$('notif-drop').classList.toggle('on')};
+window.toggleNotif=function(){$('notif-drop').classList.toggle('on');$('menu-drop').classList.remove('on')};
+window.toggleMenu=function(){$('menu-drop').classList.toggle('on');$('notif-drop').classList.remove('on')};
+window.shareApp=function(){var url='https://mychainlink.ca';var txt='Check out My Chain Link — get connected, stay connected.';if(navigator.share){navigator.share({title:'My Chain Link',text:txt,url:url})}else{showToast('Link copied!');if(navigator.clipboard)navigator.clipboard.writeText(url)}};
+window.showAbout=function(){alert('My Chain Link\n\nBuilt in Canada 🇨🇦\n© 2026 Kendal Symes\n\nGet connected. Stay connected.')};
+window.showHelp=function(){alert('Need Help?\n\n• Make sure you\'re using the latest version\n• For camera issues: allow camera permissions in your browser\n• For login issues: check your email for the verification link\n• Contact: support@mychainlink.ca')};
 window.renderNotifDrop=function(){var d=$('notif-drop');if(!notifs.length){d.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">No notifications</div>';return}var h='';notifs.slice(0,10).forEach(function(n){h+='<div class="n-item">';h+='<div class="av">'+(n.un?n.un[0].toUpperCase():'N')+'</div>';h+='<div class="txt" style="flex:1"><b>'+esc(n.un||'User')+'</b> '+esc(n.txt)+'<div class="time">'+ago(n.ts)+'</div></div>';h+='</div>'});d.innerHTML=h};
 
 // ==================== FEED ====================
@@ -2221,7 +2246,7 @@ async function handleOAuthCallback(){var url=new URL(location.href);var code=url
 // ==================== INIT ====================
 function tryLogin(){if(localStorage.getItem('cl_user')){try{cu=JSON.parse(localStorage.getItem('cl_user'));showApp();loadAllFollows();return true}catch(e){}}return false}
 handleOAuthCallback().then(function(handled){if(!handled){if(sb&&supabaseOnline){sb.auth.getSession().then(function(r){if(r.data&&r.data.session){cu=r.data.session.user;svu();showApp();loadAllFollows()}else{tryLogin()}}).catch(function(){tryLogin()})}else{tryLogin()}}});
-// Check for PayPal return
+document.addEventListener('click',function(e){var menu=$('menu-drop');var btn=$('menu-btn');if(menu&&menu.classList.contains('on')&&btn&&!btn.contains(e.target)&&!menu.contains(e.target)){menu.classList.remove('on')}});
 if(location.search.includes('paypal')){setTimeout(function(){if(vu){if(!follows[vu.id])follows[vu.id]={following:false,subscribed:false};follows[vu.id].subscribed=true;svf();showToast('Payment successful! You are now subscribed.');history.replaceState(null,'',location.pathname)}},1000)}
 </script>
 </body>
