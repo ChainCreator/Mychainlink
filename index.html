@@ -474,11 +474,14 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
 .pgrid .pi img,.pgrid .pi video{width:100%;height:100%;object-fit:cover}
 
 /* === SPOTIFY ================================================ */
-.spotify-wrap{margin:18px 0;padding:17px;background:linear-gradient(140deg,#1DB954,#158b40);border-radius:var(--r-lg);box-shadow:var(--sh-2)}
-.spotify-wrap h4{color:#fff;font-family:var(--font-d);font-size:15px;margin-bottom:10px;font-weight:700}
-.spotify-input{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.24);border-radius:var(--r-sm);padding:9px 13px;color:#fff;font-size:13px;margin-bottom:8px}
-.spotify-input:focus{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.45);box-shadow:none}
-.spotify-input::placeholder{color:rgba(255,255,255,.6)}
+.profile-song{background:linear-gradient(135deg,#2A1B3D,#1B1B2F);border-radius:16px;padding:14px 16px;margin:14px 0;border:1px solid rgba(255,215,0,.1)}
+.song-row{display:flex;align-items:center;gap:12px;cursor:pointer}
+.song-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#FFD700,#FF6B35);display:flex;align-items:center;justify-content:center;font-size:20px}
+.song-info{flex:1}
+.song-title{font-weight:700;font-size:14px;color:#fff}
+.song-artist{font-size:12px;color:#888;margin-top:2px}
+.song-play{width:36px;height:36px;border-radius:50%;background:rgba(255,215,0,.15);border:1.5px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px}
+.song-edit{background:#1C1C1C;border-radius:16px;padding:16px;margin:10px 0;border:1px solid var(--line)}
 
 /* === SETTINGS =============================================== */
 .s-group{background:linear-gradient(180deg,var(--surf-2),var(--surf));border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;box-shadow:var(--sh-2)}
@@ -1278,10 +1281,25 @@ window.showAuth = function(tab) {
         </button>
       </div>
     </div>
-    <div class="spotify-wrap" id="spotify-w">
-      <h4>🎵 Spotify</h4>
-      <input type="text" class="spotify-input" id="sp-link" placeholder="Paste Spotify track/playlist URL" onchange="saveSpotify()">
-      <div id="sp-embed"></div>
+    <div class="profile-song" id="profile-song-w">
+      <div class="song-row" onclick="toggleProfileSong()">
+        <div class="song-icon">🎵</div>
+        <div class="song-info">
+          <div class="song-title" id="ps-title">No song yet</div>
+          <div class="song-artist" id="ps-artist">Tap to add a profile song</div>
+        </div>
+        <div class="song-play" id="ps-play">▶</div>
+      </div>
+      <audio id="ps-audio" preload="metadata"></audio>
+    </div>
+    <div class="song-edit" id="song-edit-w" style="display:none">
+      <input type="text" id="ps-name" placeholder="Song title" style="background:#2A2A2A;border:1px solid #3A3A3A;border-radius:12px;padding:10px 14px;color:#F0F0F0;font-size:13px;width:100%;margin-bottom:8px">
+      <input type="text" id="ps-artist-inp" placeholder="Artist" style="background:#2A2A2A;border:1px solid #3A3A3A;border-radius:12px;padding:10px 14px;color:#F0F0F0;font-size:13px;width:100%;margin-bottom:8px">
+      <input type="file" id="ps-file" accept="audio/*" style="color:#888;font-size:12px;margin-bottom:8px">
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="saveProfileSong()">Save</button>
+        <button class="btn btn-outline btn-sm" onclick="$('song-edit-w').style.display='none'">Cancel</button>
+      </div>
     </div>
     <h3 style="font-size:16px;margin-bottom:12px">Media</h3>
     <div id="p-posts"></div>
@@ -2061,9 +2079,9 @@ var camIsVideo=false;
 window.postCam=function(){if(!camData||!cu)return;var t=$('cam-cap').value.trim();var cmtOn=$('t-post-cmt').classList.contains('on');var loc=$('cam-loc').value.trim();var p={id:uid(),uid:cu.id,un:cu.user_metadata&&cu.user_metadata.display_name?cu.user_metadata.display_name:'User',uh:cu.user_metadata&&cu.user_metadata.handle?cu.user_metadata.handle:'@user',ua:cu.user_metadata&&cu.user_metadata.avatar?cu.user_metadata.avatar:'',t:t,m:camData,v:camIsVideo||false,ts:Date.now(),lk:[],dk:[],cm:[],c:cmtOn,subOnly:settings.subOnly,tags:'',loc:loc};posts.unshift(p);svp();closeCam();$('cam-cap').value='';$('cam-loc').value='';renderFeed();showToast(camIsVideo?'Video posted!':'Posted!')};var editingPostId=null;window.editPost=function(id){var p=posts.find(function(x){return x.id===id});if(!p)return;editingPostId=id;$('epost-t').value=p.t||'';$('m-edit-post').classList.add('on')};window.saveEditPost=function(){if(!editingPostId)return;var p=posts.find(function(x){return x.id===editingPostId});if(!p)return;var t=$('epost-t').value.trim();if(!t){showToast('Post cannot be empty');return}p.t=t;var extractedTags=t.match(/#[a-zA-Z0-9_]+/g);if(extractedTags){var cleanExtracted=extractedTags.map(function(tag){return tag.toLowerCase()}).join(' ');p.tags=p.tags?(p.tags+' '+cleanExtracted):cleanExtracted}svp();renderFeed();closeModal('m-edit-post');editingPostId=null;showToast('Post updated!')};window.delPost=function(id){if(!confirm('Delete this post? This cannot be undone.'))return;var i=posts.findIndex(function(x){return x.id===id});if(i>-1){posts.splice(i,1);svp();renderFeed();showToast('Post deleted')}};
 
 // ==================== PROFILE ====================
-window.renderProfile=function(){if(!cu)return;var lu=localUsers.find(function(u){return u.id===cu.id});var has2FA=lu&&lu.twoFactorPIN;$('2fa-status').textContent=has2FA?'On':'Off';$('2fa-status').style.color=has2FA?'#1DB954':'#888';var myPosts=posts.filter(function(p){return p.uid===cu.id});$('p-sp').textContent=myPosts.length;if(sb&&supabaseOnline&&cu){sb.from('follows').select('*').eq('following_id',cu.id).then(function(r){var count=(r.data||[]).length;$('p-fl').textContent=count}).catch(function(){$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length})}else{$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length}$('p-fg').textContent=Object.keys(follows).filter(function(k){return follows[k]&&follows[k].following}).length;var isPremium=localStorage.getItem('cl_premium_'+cu.id);if(isPremium){$('p-premium').style.display='block'}else{$('p-premium').style.display='none'};var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('p-posts').innerHTML=h;var spLink=localStorage.getItem('cl_spotify_'+cu.id);if(spLink){$('sp-link').value=spLink;renderSpotify(spLink)}};
-window.saveSpotify=function(){if(!cu)return;var link=$('sp-link').value.trim();if(!link)return;localStorage.setItem('cl_spotify_'+cu.id,link);renderSpotify(link)};
-function renderSpotify(link){if(!link)return;var embedDiv=$('sp-embed');embedDiv.innerHTML='';if(link.indexOf('open.spotify.com')>-1){var parts=link.split('/');var type=parts[parts.length-2]||'track';var id=parts[parts.length-1].split('?')[0];if(id){var url='https://open.spotify.com/embed/'+type+'/'+id;var height=type==='playlist'?'380':'80';embedDiv.innerHTML='<iframe src="'+url+'" width="100%" height="'+height+'" frameborder="0" allowtransparency="true" allow="encrypted-media" style="border-radius:8px"></iframe>'}}}window.renderSpotify=renderSpotify;
+window.renderProfile=function(){if(!cu)return;var lu=localUsers.find(function(u){return u.id===cu.id});var has2FA=lu&&lu.twoFactorPIN;$('2fa-status').textContent=has2FA?'On':'Off';$('2fa-status').style.color=has2FA?'#1DB954':'#888';var myPosts=posts.filter(function(p){return p.uid===cu.id});$('p-sp').textContent=myPosts.length;if(sb&&supabaseOnline&&cu){sb.from('follows').select('*').eq('following_id',cu.id).then(function(r){var count=(r.data||[]).length;$('p-fl').textContent=count}).catch(function(){$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length})}else{$('p-fl').textContent=(JSON.parse(localStorage.getItem('cl_followers')||'{}')[cu.id]||[]).length}$('p-fg').textContent=Object.keys(follows).filter(function(k){return follows[k]&&follows[k].following}).length;var isPremium=localStorage.getItem('cl_premium_'+cu.id);if(isPremium){$('p-premium').style.display='block'}else{$('p-premium').style.display='none'};var h='';var mediaPosts=myPosts.filter(function(p){return p.m});if(!mediaPosts.length){h='<div style="text-align:center;padding:40px;color:#555">No posts yet</div>'}else{h='<div class="pgrid">';mediaPosts.forEach(function(p){h+='<div class="pi">';if(p.v){h+='<video src="'+p.m+'" muted playsInline></video>'}else{h+='<img src="'+p.m+'">'}h+='</div>'});h+='</div>'}$('p-posts').innerHTML=h;var songData=localStorage.getItem('cl_song_'+cu.id);if(songData){try{var s=JSON.parse(songData);$('ps-title').textContent=s.title||'Untitled';$('ps-artist').textContent=s.artist||'Unknown artist';if(s.data){$('ps-audio').src=s.data}$('song-edit-w').style.display='none'}catch(e){}}else{$('ps-title').textContent='No song yet';$('ps-artist').textContent='Tap to add a profile song'}};
+window.toggleProfileSong=function(){if(!cu)return;var songData=localStorage.getItem('cl_song_'+cu.id);if(!songData){$('song-edit-w').style.display='block';return}var audio=$('ps-audio');if(audio.paused){audio.play().then(function(){$('ps-play').textContent='❚❚'}).catch(function(){showToast('Could not play')})}else{audio.pause();$('ps-play').textContent='▶'}};
+window.saveProfileSong=function(){if(!cu)return;var title=$('ps-name').value.trim();var artist=$('ps-artist-inp').value.trim();var fileInp=$('ps-file');var file=fileInp.files[0];if(!title&&!artist&&!file){showToast('Fill in song details');return}var songObj={title:title||'Untitled',artist:artist||'Unknown artist',data:null};if(file){if(file.size>10*1024*1024){showToast('Song too large. Max 10MB');return}var reader=new FileReader();reader.onload=function(e){songObj.data=e.target.result;localStorage.setItem('cl_song_'+cu.id,JSON.stringify(songObj));$('ps-audio').src=songObj.data;$('ps-title').textContent=songObj.title;$('ps-artist').textContent=songObj.artist;$('song-edit-w').style.display='none';$('ps-name').value='';$('ps-artist-inp').value='';fileInp.value='';showToast('Profile song saved!')};reader.readAsDataURL(file)}else{localStorage.setItem('cl_song_'+cu.id,JSON.stringify(songObj));$('ps-title').textContent=songObj.title;$('ps-artist').textContent=songObj.artist;$('song-edit-w').style.display='none';showToast('Profile song saved!')}};
 
 // ==================== SETTINGS ====================
 window.editProfileModal=function(){if(!cu){showToast('Sign in to edit profile');return}var meta=cu.user_metadata||{};$('ep-n').value=meta.display_name||'';$('ep-h').value=meta.handle||'@user';$('ep-b').value=meta.bio||'';var previewDiv=$('ep-a-preview');var img=$('ep-a-img');var inp=$('ep-a');if(previewDiv)previewDiv.style.display='none';if(img)img.src='';if(inp){inp.value='';inp.removeAttribute('data-url');inp.removeAttribute('data-file')}if(meta.avatar&&img&&previewDiv){img.src=meta.avatar;previewDiv.style.display='block'};$('m-edit').classList.add('on')};
