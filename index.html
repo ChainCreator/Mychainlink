@@ -149,122 +149,118 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
 .auth-container{
   position:fixed;inset:0;z-index:9000;overflow-y:auto;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  padding:40px 20px 96px;background:var(--bg);
-  background-image:
-    radial-gradient(120% 60% at 50% -10%, rgba(230,201,106,.11), transparent 60%),
-    radial-gradient(70% 46% at 110% 100%, rgba(201,162,67,.07), transparent 62%);
+  padding:32px 18px 100px;background:var(--bg);
 }
 .auth-container.hidden{display:none}
-.auth-container>*{animation:rise .7s var(--ease-out) both}
-.auth-container>*:nth-child(1){animation-delay:.02s}
-.auth-container>*:nth-child(2){animation-delay:.08s}
-.auth-container>*:nth-child(3){animation-delay:.14s}
-@keyframes rise{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
 
-.auth-logo{text-align:center;margin:16px 0 26px}
-.auth-logo img{width:172px;height:auto;margin:0 auto 14px;display:block;filter:drop-shadow(0 14px 34px rgba(230,201,106,.22))}
-.auth-logo .tag{
-  font-family:var(--font-d);font-style:italic;font-size:14px;color:var(--ink-2);
-  font-weight:400;letter-spacing:.01em;text-transform:none;
-}
-.auth-banner{
-  position:relative;width:min(100%,400px);margin:0 auto 22px;padding:7px 16px;
-  background:linear-gradient(140deg,rgba(230,201,106,.09),rgba(230,201,106,.03));
-  border:1px solid var(--line-warm);border-radius:var(--r-pill);text-align:center;overflow:hidden;
-}
-.auth-banner::after{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;
-  background:linear-gradient(100deg,transparent,rgba(230,201,106,.10),transparent);
-  animation:sheen 6.5s var(--ease) infinite}
-@keyframes sheen{0%,72%{transform:translateX(0)}100%{transform:translateX(360%)}}
-.auth-banner .no-filters{font-size:11px;line-height:1.35;font-weight:800;color:var(--gold-hi);text-transform:uppercase;letter-spacing:.14em;white-space:nowrap}
+.auth-logo{text-align:center;margin:0 0 20px}
+.auth-logo img{width:90px;height:auto;margin:0 auto 10px;display:block}
+.auth-logo .tag{font-size:13px;color:var(--ink-3);font-weight:500;letter-spacing:.02em}
 
 .auth-box{
-  width:100%;max-width:400px;background:linear-gradient(180deg,var(--surf-2),var(--surf));
-  border:1px solid var(--line);border-radius:var(--r-xl);padding:26px 24px 28px;
-  box-shadow:var(--sh-3),inset 0 1px 0 rgba(255,255,255,.035);
+  width:100%;max-width:420px;background:var(--surf);
+  border:1px solid var(--line);border-radius:20px;padding:28px 24px 24px;
 }
-.auth-tabs{display:flex;gap:4px;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r);padding:4px;margin-bottom:24px}
+
+.auth-tabs{display:flex;gap:6px;background:var(--bg-soft);border-radius:14px;padding:4px;margin-bottom:22px}
 .auth-tab{
-  flex:1;padding:10px 0;text-align:center;border-radius:11px;
-  font-size:13.5px;font-weight:650;color:var(--ink-3);cursor:pointer;
-  transition:color .22s var(--ease),background .22s var(--ease),box-shadow .22s var(--ease);
+  flex:1;padding:11px 0;text-align:center;border-radius:11px;
+  font-size:14px;font-weight:600;color:var(--ink-3);cursor:pointer;
+  transition:all .2s ease;
 }
 .auth-tab:hover{color:var(--ink-2)}
-.auth-tab.a{background:var(--surf-3);color:var(--gold-hi);box-shadow:var(--sh-1),inset 0 1px 0 rgba(255,255,255,.05)}
+.auth-tab.a{background:var(--surf-3);color:var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
 .auth-form{display:none}
-.auth-form.a{display:block;animation:rise .45s var(--ease-out) both}
-.auth-form h2{font-size:27px;font-weight:700;margin-bottom:5px;font-family:var(--font-d)}
-.auth-form>p{color:var(--ink-3);font-size:14px;margin-bottom:22px;line-height:1.5}
+.auth-form.a{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.fg{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
-.fg label{
-  font-size:11.5px;color:var(--ink-2);font-weight:700;
-  text-transform:uppercase;letter-spacing:.1em;
+.auth-form h2{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--ink)}
+.auth-form>p{color:var(--ink-3);font-size:13px;margin-bottom:20px}
+
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.fg label{font-size:12px;color:var(--ink-2);font-weight:600}
+.fg input{
+  background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;font-size:14px;color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;
 }
+.fg input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,215,0,.1)}
+.fg input::placeholder{color:var(--ink-4)}
 .fg-split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.hint{font-size:12px;color:var(--ink-3);line-height:1.5;margin-top:-1px}
-.hint b{color:var(--ink-2);font-weight:650}
+.hint{font-size:11px;color:var(--ink-3);line-height:1.5;margin-top:2px}
 
-.sect{margin:24px 0 16px;display:flex;align-items:center;gap:11px}
+.sect{margin:18px 0 12px;display:flex;align-items:center;gap:10px}
 .sect .num{
-  width:24px;height:24px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;
-  background:var(--gold-wash);border:1px solid var(--line-warm);
-  color:var(--gold);font-size:11.5px;font-weight:800;font-family:var(--font-b);
+  width:22px;height:22px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;
+  background:var(--gold-wash);border:1px solid var(--gold-edge);
+  color:var(--gold);font-size:11px;font-weight:700;
 }
-.sect .st{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--ink)}
-.sect .sd{font-size:12px;color:var(--ink-3);margin-top:1px}
-.sect-line{height:1px;background:linear-gradient(90deg,var(--line-warm),transparent);margin:0 0 18px}
+.sect .st{font-size:15px;font-weight:700;color:var(--ink)}
+.sect .sd{font-size:11px;color:var(--ink-3);margin-top:1px}
+.sect-line{height:1px;background:var(--line);margin:0 0 14px}
 
-.or{display:flex;align-items:center;gap:14px;margin:22px 0;color:var(--ink-4);font-size:10.5px;text-transform:uppercase;letter-spacing:.16em;font-weight:700}
+.or{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ink-4);font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700}
 .or::before,.or::after{content:'';flex:1;height:1px;background:var(--line)}
 
 .terms-row{
-  display:flex;align-items:flex-start;gap:11px;margin:18px 0 16px;
-  font-size:12.5px;color:var(--ink-2);line-height:1.55;
-  background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;
+  display:flex;align-items:flex-start;gap:10px;margin:14px 0;
+  font-size:12px;color:var(--ink-2);line-height:1.5;
+  background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:12px;
 }
-.terms-row input[type="checkbox"]{width:17px;height:17px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;padding:0}
+.terms-row input[type="checkbox"]{width:16px;height:16px;margin-top:1px;accent-color:var(--gold);flex-shrink:0;cursor:pointer}
 .terms-row label{cursor:pointer}
-.terms-row a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
-.terms-row a:hover{color:var(--gold-hi)}
+.terms-row a{color:var(--gold);text-decoration:underline}
 
 .error-msg{
-  color:#FF7B9C;font-size:12.5px;margin-top:10px;display:none;
-  background:var(--red-soft);border:1px solid rgba(255,51,102,.24);border-radius:var(--r-sm);
-  padding:10px 12px;line-height:1.5;
+  color:#FF7B9C;font-size:12px;margin-top:8px;display:none;
+  background:var(--red-soft);border:1px solid rgba(255,51,102,.24);border-radius:10px;
+  padding:10px 12px;
 }
-.error-msg.show{display:block;animation:shake .38s var(--ease)}
-@keyframes shake{10%,90%{transform:translateX(-1.5px)}30%,70%{transform:translateX(3px)}50%{transform:translateX(-3px)}}
+.error-msg.show{display:block}
 
-.forgot-link{text-align:center;font-size:13px;color:var(--ink-3);margin-top:16px;cursor:pointer;transition:color .2s;font-weight:550}
+.forgot-link{text-align:center;font-size:12px;color:var(--ink-3);margin-top:12px;cursor:pointer;transition:color .2s}
 .forgot-link:hover{color:var(--gold)}
 .forgot-form{display:none}
 .forgot-form.a{display:block}
-.paypal-row{margin:18px 0;padding:16px;background:var(--bg-soft);border-radius:var(--r);border:1px dashed var(--line);text-align:center;display:none}
+.paypal-row{margin:14px 0;padding:14px;background:var(--bg-soft);border-radius:12px;border:1px dashed var(--line);text-align:center;display:none}
 .paypal-row.show,.paypal-row.show-when-join{display:block}
-.auth-foot{margin:26px auto 0;text-align:center;font-size:11px;color:var(--ink-4);max-width:400px}
+.auth-foot{margin:20px auto 0;text-align:center;font-size:11px;color:var(--ink-4);max-width:400px}
 #sq-display{
-  display:none;margin:2px 0 16px;padding:13px 15px;
-  background:var(--gold-wash);border:1px solid var(--line-warm);border-radius:var(--r);
-  font-size:13.5px;color:var(--ink-2);line-height:1.6;
+  display:none;margin:2px 0 14px;padding:12px;
+  background:var(--gold-wash);border:1px solid var(--gold-edge);border-radius:12px;
+  font-size:13px;color:var(--ink-2);
 }
-#sq-display b{display:block;font-family:var(--font-d);color:var(--gold-hi);font-weight:650;margin-bottom:3px}
-#sq-display b+span{display:block}
+#sq-display b{display:block;color:var(--gold);font-weight:600;margin-bottom:2px}
 
-/* === REVEAL TOGGLE (show what you're typing) ================= */
+/* === REVEAL TOGGLE ================= */
 .reveal-row{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  margin-top:11px;padding:11px 13px;
-  background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--r);
-  transition:border-color .22s var(--ease),background .22s var(--ease);
+  margin-top:8px;padding:10px 12px;
+  background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
+  transition:all .2s;
 }
-.reveal-row.on{border-color:var(--line-warm);background:var(--gold-wash)}
-.reveal-row .rl{display:flex;align-items:center;gap:9px;min-width:0}
-.reveal-row .rl svg{width:16px;height:16px;flex-shrink:0;color:var(--ink-3);transition:color .22s var(--ease)}
+.reveal-row.on{border-color:var(--gold-edge);background:var(--gold-wash)}
+.reveal-row .rl{display:flex;align-items:center;gap:8px;min-width:0}
+.reveal-row .rl svg{width:15px;height:15px;flex-shrink:0;color:var(--ink-3)}
 .reveal-row.on .rl svg{color:var(--gold)}
 .reveal-row .eye-on{display:none}
 .reveal-row.on .eye-on{display:block}
 .reveal-row.on .eye-off{display:none}
+.reveal-row .rt{font-size:12.5px;color:var(--ink-2);font-weight:500}
+.reveal-row.on .rt{color:var(--gold)}
+.reveal-row .rs{font-size:11px;color:var(--ink-4);font-weight:600;min-width:24px;text-align:right}
+.reveal-row.on .rs{color:var(--gold)}
+.reveal-row .toggle.sm{
+  width:36px;height:20px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--line);
+  position:relative;cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.reveal-row .toggle.sm::after{
+  content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+  background:var(--ink-3);transition:all .2s;
+}
+.reveal-row.on .toggle.sm{background:var(--gold-wash);border-color:var(--gold-edge)}
+.reveal-row.on .toggle.sm::after{left:18px;background:var(--gold)}
 .reveal-row .rt{font-size:13px;font-weight:650;color:var(--ink-2)}
 .reveal-row .rs{font-size:11.5px;color:var(--ink-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-left:auto;margin-right:2px}
 .reveal-row.on .rt{color:var(--ink)}
@@ -838,9 +834,6 @@ window.showAuth = function(tab) {
     <img src="logo-v3.png" alt="My Chain Link">
     <div class="tag">Get connected. Stay connected.</div>
   </div>
-  <div class="auth-banner">
-    <div class="no-filters">No filters • No gallery uploads</div>
-  </div>
   <div class="auth-box">
     <div class="auth-tabs" role="tablist">
       <div class="auth-tab a" onclick="swt('in')" id="tab-in" role="tab">Log in</div>
@@ -850,13 +843,161 @@ window.showAuth = function(tab) {
     <!-- ============ LOG IN ============ -->
     <div class="auth-form a" id="form-in">
       <h2>Welcome back</h2>
-      <p>Pick up right where your chain left off.</p>
+      <p>Sign in to continue</p>
       <div class="fg"><label for="li-e">Email</label><input type="email" id="li-e" autocomplete="email" placeholder="you@example.com"></div>
       <div class="fg" style="margin-bottom:6px"><label for="li-p">Password</label><input type="password" id="li-p" autocomplete="current-password" placeholder="Your password"></div>
       <div class="reveal-row" id="rv-li" role="button" tabindex="0" aria-pressed="false" onclick="toggleReveal('li')" onkeydown="revealKey(event,'li')">
         <span class="rl">
           <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.6 6.61A18.5 18.5 0 0 0 2 12s3 8 10 8a9 9 0 0 0 5.4-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></svg>
           <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="rt">Show password</span>
+        </span>
+        <span class="rs" id="rv-li-s">Off</span>
+        <div class="toggle sm" id="rv-li-t"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="li()">Sign in<div class="spin" id="li-s"></div></button>
+      <div class="error-msg" id="li-er"></div>
+      <div class="forgot-link" onclick="showForgot()">Forgot password?</div>
+      <div class="or">or</div>
+      <button class="btn btn-g" onclick="og()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <button class="btn btn-f" style="margin-top:10px" onclick="ofb()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Continue with Facebook
+      </button>
+    </div>
+
+    <!-- ============ CREATE ACCOUNT ============ -->
+    <div class="auth-form" id="form-up">
+      <h2>Create your account</h2>
+      <p>Join the chain</p>
+
+      <!-- 1. About you -->
+      <div class="sect" style="margin-top:6px">
+        <div class="num">1</div>
+        <div><div class="st">About you</div><div class="sd">How people will find you</div></div>
+      </div>
+      <div class="sect-line"></div>
+
+      <div class="fg"><label for="su-n">Full name</label><input type="text" id="su-n" autocomplete="name" placeholder="Your name" oninput="if($('su-p').value)checkPwStrength()"></div>
+      <div class="fg"><label for="su-e">Email</label><input type="email" id="su-e" autocomplete="email" placeholder="you@example.com" oninput="if($('su-p').value)checkPwStrength()"></div>
+      <div class="fg">
+        <label for="su-b">Birthday</label>
+        <input type="date" id="su-b" autocomplete="bday" min="1900-01-01" oninput="checkBirthday()">
+        <div class="hint" id="bd-hint">Must be 13 or older. Only day and month are shown publicly.</div>
+      </div>
+
+      <!-- 2. Password -->
+      <div class="sect">
+        <div class="num">2</div>
+        <div><div class="st">Create password</div><div class="sd">12+ characters recommended</div></div>
+      </div>
+      <div class="sect-line"></div>
+
+      <div class="fg" style="margin-bottom:8px">
+        <label for="su-p">Password</label>
+        <input type="password" id="su-p" autocomplete="new-password" placeholder="At least 12 characters" oninput="checkPwStrength()">
+        <div class="pw-meter" id="pw-meter" data-score="0" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="pw-label"><span class="pl">Strength</span><span class="pv" id="pw-verdict">Nothing yet</span></div>
+        <div class="pw-reqs" id="pw-rules">
+          <div class="pw-req" data-req="len"><span class="dot"></span>12+ characters</div>
+          <div class="pw-req" data-req="upper"><span class="dot"></span>Uppercase letter</div>
+          <div class="pw-req" data-req="lower"><span class="dot"></span>Lowercase letter</div>
+          <div class="pw-req" data-req="num"><span class="dot"></span>Number</div>
+          <div class="pw-req" data-req="sym"><span class="dot"></span>Symbol (!&nbsp;?&nbsp;#&nbsp;&amp;)</div>
+          <div class="pw-req" data-req="safe"><span class="dot"></span>Not easy to guess</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:6px"><label for="su-p2">Confirm password</label><input type="password" id="su-p2" autocomplete="new-password" placeholder="Type it once more" oninput="checkPwMatch()"><div class="hint" id="pw-match"></div></div>
+      <div class="reveal-row" id="rv-su" role="button" tabindex="0" aria-pressed="false" onclick="toggleReveal('su')" onkeydown="revealKey(event,'su')">
+        <span class="rl">
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.6 6.61A18.5 18.5 0 0 0 2 12s3 8 10 8a9 9 0 0 0 5.4-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></svg>
+          <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="rt">Show passwords</span>
+        </span>
+        <span class="rs" id="rv-su-s">Off</span>
+        <div class="toggle sm" id="rv-su-t"></div>
+      </div>
+
+      <!-- 3. Recovery -->
+      <div class="sect">
+        <div class="num">3</div>
+        <div><div class="st">Account recovery</div><div class="sd">Security questions if you get locked out</div></div>
+      </div>
+      <div class="sect-line"></div>
+
+      <div class="fg">
+        <label for="su-sq">Security question 1</label>
+        <select id="su-sq" onchange="syncSecurityQuestions()">
+          <option value="">Choose a question...</option>
+        </select>
+        <input type="password" id="su-sa" autocomplete="off" placeholder="Your answer" style="margin-top:8px">
+      </div>
+      <div class="fg" style="margin-bottom:6px">
+        <label for="su-sq2">Security question 2</label>
+        <select id="su-sq2" onchange="syncSecurityQuestions()">
+          <option value="">Choose a different question...</option>
+        </select>
+        <input type="password" id="su-sa2" autocomplete="off" placeholder="Your answer" style="margin-top:8px">
+        <div class="hint">Answers are hashed — no one can read them back.</div>
+      </div>
+      <div class="reveal-row" id="rv-sq" role="button" tabindex="0" aria-pressed="false" onclick="toggleReveal('sq')" onkeydown="revealKey(event,'sq')">
+        <span class="rl">
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.6 6.61A18.5 18.5 0 0 0 2 12s3 8 10 8a9 9 0 0 0 5.4-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></svg>
+          <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="rt">Show answers</span>
+        </span>
+        <span class="rs" id="rv-sq-s">Off</span>
+        <div class="toggle sm" id="rv-sq-t"></div>
+      </div>
+
+      <div class="fg" style="margin-top:14px">
+        <label for="su-2fa">Two-factor PIN <span style="color:var(--ink-4);font-weight:400">(optional)</span></label>
+        <input type="password" id="su-2fa" inputmode="numeric" placeholder="6 digits for extra security" maxlength="6">
+      </div>
+
+      <div class="paypal-row show" id="pp-row">
+        <p style="font-size:12px;color:var(--ink-2);margin-bottom:10px">Want to accept payments? Link PayPal now or do it later in Settings.</p>
+        <button class="btn btn-gold btn-sm" style="margin:0 auto" onclick="connectPayPal()" id="pp-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+          Connect PayPal
+        </button>
+        <p style="font-size:11px;color:var(--ink-3);margin-top:8px" id="pp-status">Optional — skip if you don't want subscriptions</p>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="su-t">
+        <label for="su-t">I agree to the <a onclick="showTerms()">Terms of Service</a> and <a onclick="showHarassment()">Anti-Harassment Policy</a>.</label>
+      </div>
+      <button class="btn btn-primary" onclick="su()">Create account<div class="spin" id="su-s"></div></button>
+      <div class="error-msg" id="su-er"></div>
+      <div class="or">or</div>
+      <button class="btn btn-g" onclick="og()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign up with Google
+      </button>
+    </div>
+
+    <!-- ============ RESET ============ -->
+    <div class="auth-form forgot-form" id="form-fg">
+      <h2>Reset password</h2>
+      <p>Answer your security questions to continue</p>
+      <div class="fg"><label for="fg-e">Email</label><input type="email" id="fg-e" autocomplete="email" placeholder="you@example.com" onchange="loadSecurityQuestion()"></div>
+      <div id="sq-display" style="display:none"></div>
+      <div class="fg" id="sq-answer-wrap" style="display:none"><label for="fg-sa">Answer 1</label><input type="password" id="fg-sa" autocomplete="off" placeholder="Your answer"></div>
+      <div class="fg" id="sq-answer-wrap2" style="display:none"><label for="fg-sa2">Answer 2</label><input type="password" id="fg-sa2" autocomplete="off" placeholder="Your answer"></div>
+      <div class="fg" id="new-pw-wrap" style="display:none"><label for="fg-pw">New password</label><input type="password" id="fg-pw" autocomplete="new-password" placeholder="At least 12 characters"></div>
+      <div class="fg" id="confirm-pw-wrap" style="display:none"><label for="fg-pw2">Confirm password</label><input type="password" id="fg-pw2" autocomplete="new-password" placeholder="Type it once more"></div>
+      <button class="btn btn-primary" id="fg-btn" onclick="verifyAnswers()">Verify answers<div class="spin" id="fg-s"></div></button>
+      <button class="btn btn-primary" id="fg-save" style="display:none" onclick="saveNewPw()">Save new password<div class="spin" id="fg-s2"></div></button>
+      <div class="error-msg" id="fg-er"></div>
+      <div class="forgot-link" onclick="showAuth('in')">Back to sign in</div>
+    </div>
+  </div>
+  <div class="auth-foot">© MyChainLink 2026 — All Rights Reserved. Kendal Symes.</div>
+</div>
           <span class="rt">Show what I'm typing</span>
         </span>
         <span class="rs" id="rv-li-s">Off</span>
