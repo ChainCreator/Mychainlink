@@ -7,7 +7,7 @@ try{sb=supabase.createClient(SURL,SKEY);supabaseOnline=true}catch(e){console.log
 
 // ==================== LOCAL AUTH FALLBACK ====================
 var localUsers=JSON.parse(localStorage.getItem('cl_localUsers')||'[]');
-function saveLocalUser(user){localUsers.push(user);localStorage.setItem('cl_localUsers',JSON.stringify(localUsers));var allUsersStore=JSON.parse(localStorage.getItem('cl_allUsers')||'[]');if(!allUsersStore.find(function(u){return u.id===user.id})){allUsersStore.push({id:user.id,name:user.name||user.user_metadata&&user.user_metadata.display_name||'User',handle:user.handle||user.user_metadata&&user.user_metadata.handle||'@user',avatar:user.avatar||user.user_metadata&&user.user_metadata.avatar||''});localStorage.setItem('cl_allUsers',JSON.stringify(allUsersStore))}}
+function saveLocalUser(user){localUsers.push(user);localStorage.setItem('cl_localUsers',JSON.stringify(localUsers));var allUsersStore=JSON.parse(localStorage.getItem('cl_allUsers')||'[]');if(!allUsersStore.find(function(u){return u.id===user.id})){allUsersStore.push({id:user.id,email:user.email||'',name:user.name||user.user_metadata&&user.user_metadata.display_name||'User',handle:user.handle||user.user_metadata&&user.user_metadata.handle||'@user',avatar:user.avatar||user.user_metadata&&user.user_metadata.avatar||''});localStorage.setItem('cl_allUsers',JSON.stringify(allUsersStore))}}
 function findLocalUser(email,password){return localUsers.find(function(u){return u.email===email&&u.password===password})}
 function getLocalUserById(id){return localUsers.find(function(u){return u.id===id})}
 function syncLocalUserToCu(lu){return{id:lu.id,email:lu.email,user_metadata:{display_name:lu.name,handle:lu.handle,bio:lu.bio||'',avatar:lu.avatar||''}}}
