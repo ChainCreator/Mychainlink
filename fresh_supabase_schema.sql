@@ -268,9 +268,11 @@ CREATE POLICY "likes_delete" ON public.likes FOR DELETE USING (user_id = auth.ui
 -- COMMENTS
 DROP POLICY IF EXISTS "comments_select" ON public.comments;
 DROP POLICY IF EXISTS "comments_insert" ON public.comments;
+DROP POLICY IF EXISTS "comments_update" ON public.comments;
 DROP POLICY IF EXISTS "comments_delete" ON public.comments;
 CREATE POLICY "comments_select" ON public.comments FOR SELECT USING (true);
 CREATE POLICY "comments_insert" ON public.comments FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "comments_update" ON public.comments FOR UPDATE USING (user_id = auth.uid());
 CREATE POLICY "comments_delete" ON public.comments FOR DELETE USING (user_id = auth.uid());
 
 -- FOLLOWS
@@ -284,16 +286,26 @@ CREATE POLICY "follows_delete" ON public.follows FOR DELETE USING (follower_id =
 -- CONVERSATIONS
 DROP POLICY IF EXISTS "conversations_select" ON public.conversations;
 DROP POLICY IF EXISTS "conversations_insert" ON public.conversations;
+DROP POLICY IF EXISTS "conversations_update" ON public.conversations;
+DROP POLICY IF EXISTS "conversations_delete" ON public.conversations;
 CREATE POLICY "conversations_select" ON public.conversations FOR SELECT USING (
   participant_1 = auth.uid() OR participant_2 = auth.uid()
 );
 CREATE POLICY "conversations_insert" ON public.conversations FOR INSERT WITH CHECK (
   participant_1 = auth.uid() OR participant_2 = auth.uid()
 );
+CREATE POLICY "conversations_update" ON public.conversations FOR UPDATE USING (
+  participant_1 = auth.uid() OR participant_2 = auth.uid()
+);
+CREATE POLICY "conversations_delete" ON public.conversations FOR DELETE USING (
+  participant_1 = auth.uid() OR participant_2 = auth.uid()
+);
 
 -- MESSAGES
 DROP POLICY IF EXISTS "messages_select" ON public.messages;
 DROP POLICY IF EXISTS "messages_insert" ON public.messages;
+DROP POLICY IF EXISTS "messages_update" ON public.messages;
+DROP POLICY IF EXISTS "messages_delete" ON public.messages;
 CREATE POLICY "messages_select" ON public.messages FOR SELECT USING (
   sender_id = auth.uid() OR
   EXISTS (
@@ -310,10 +322,18 @@ CREATE POLICY "messages_insert" ON public.messages FOR INSERT WITH CHECK (
     AND (c.participant_1 = auth.uid() OR c.participant_2 = auth.uid())
   )
 );
+CREATE POLICY "messages_update" ON public.messages FOR UPDATE USING (sender_id = auth.uid());
+CREATE POLICY "messages_delete" ON public.messages FOR DELETE USING (sender_id = auth.uid());
 
 -- NOTIFICATIONS
 DROP POLICY IF EXISTS "notifications_select" ON public.notifications;
+DROP POLICY IF EXISTS "notifications_insert" ON public.notifications;
+DROP POLICY IF EXISTS "notifications_update" ON public.notifications;
+DROP POLICY IF EXISTS "notifications_delete" ON public.notifications;
 CREATE POLICY "notifications_select" ON public.notifications FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "notifications_insert" ON public.notifications FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "notifications_update" ON public.notifications FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "notifications_delete" ON public.notifications FOR DELETE USING (user_id = auth.uid());
 
 -- LIVE STREAMS
 DROP POLICY IF EXISTS "streams_select" ON public.live_streams;
@@ -324,16 +344,22 @@ CREATE POLICY "streams_all" ON public.live_streams FOR ALL USING (user_id = auth
 -- STORIES
 DROP POLICY IF EXISTS "stories_select" ON public.stories;
 DROP POLICY IF EXISTS "stories_insert" ON public.stories;
+DROP POLICY IF EXISTS "stories_update" ON public.stories;
 DROP POLICY IF EXISTS "stories_delete" ON public.stories;
 CREATE POLICY "stories_select" ON public.stories FOR SELECT USING (true);
 CREATE POLICY "stories_insert" ON public.stories FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "stories_update" ON public.stories FOR UPDATE USING (user_id = auth.uid());
 CREATE POLICY "stories_delete" ON public.stories FOR DELETE USING (user_id = auth.uid());
 
 -- REPORTS
 DROP POLICY IF EXISTS "reports_select" ON public.reports;
 DROP POLICY IF EXISTS "reports_insert" ON public.reports;
+DROP POLICY IF EXISTS "reports_update" ON public.reports;
+DROP POLICY IF EXISTS "reports_delete" ON public.reports;
 CREATE POLICY "reports_select" ON public.reports FOR SELECT USING (reporter_id = auth.uid());
 CREATE POLICY "reports_insert" ON public.reports FOR INSERT WITH CHECK (reporter_id = auth.uid());
+CREATE POLICY "reports_update" ON public.reports FOR UPDATE USING (reporter_id = auth.uid());
+CREATE POLICY "reports_delete" ON public.reports FOR DELETE USING (reporter_id = auth.uid());
 
 -- BLOCKS
 DROP POLICY IF EXISTS "blocks_select" ON public.blocks;
@@ -346,17 +372,25 @@ CREATE POLICY "blocks_delete" ON public.blocks FOR DELETE USING (blocker_id = au
 -- SUBSCRIPTIONS
 DROP POLICY IF EXISTS "subscriptions_select" ON public.subscriptions;
 DROP POLICY IF EXISTS "subscriptions_insert" ON public.subscriptions;
+DROP POLICY IF EXISTS "subscriptions_update" ON public.subscriptions;
+DROP POLICY IF EXISTS "subscriptions_delete" ON public.subscriptions;
 CREATE POLICY "subscriptions_select" ON public.subscriptions FOR SELECT USING (
   subscriber_id = auth.uid() OR creator_id = auth.uid()
 );
 CREATE POLICY "subscriptions_insert" ON public.subscriptions FOR INSERT WITH CHECK (subscriber_id = auth.uid());
+CREATE POLICY "subscriptions_update" ON public.subscriptions FOR UPDATE USING (
+  subscriber_id = auth.uid() OR creator_id = auth.uid()
+);
+CREATE POLICY "subscriptions_delete" ON public.subscriptions FOR DELETE USING (subscriber_id = auth.uid());
 
 -- MEDIA_UPLOADS
 DROP POLICY IF EXISTS "media_select" ON public.media_uploads;
 DROP POLICY IF EXISTS "media_insert" ON public.media_uploads;
+DROP POLICY IF EXISTS "media_update" ON public.media_uploads;
 DROP POLICY IF EXISTS "media_delete" ON public.media_uploads;
 CREATE POLICY "media_select" ON public.media_uploads FOR SELECT USING (user_id = auth.uid());
 CREATE POLICY "media_insert" ON public.media_uploads FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "media_update" ON public.media_uploads FOR UPDATE USING (user_id = auth.uid());
 CREATE POLICY "media_delete" ON public.media_uploads FOR DELETE USING (user_id = auth.uid());
 
 -- ============================================================
