@@ -1,0 +1,17 @@
+- name: Setup VS Dev Environment
+  # You may pin to the exact commit or the version.
+  # uses: seanmiddleditch/gha-setup-vsdevenv@cf96bf5b227cac6af28c04c4a4e69286ea444163
+  uses: seanmiddleditch/gha-setup-vsdevenv@v5
+  with:
+    # Name or path to vswhere.exr
+    vswhere: # optional, default is vswhere.exe
+    # Target build architecture
+    arch: # optional, default is amd64
+    # Host architecture (x86, x86_amd64, or amd64)
+    host_arch: # optional, default is 
+    # Overrides the default WinSDK version
+    winsdk: # optional, default is 
+    # Overrides the default toolset version
+    toolset_version: # optional, default is 
+    # List of components required in the selected VS installation (semi-colon separated)
+    components: # optional, default is Microsoft.VisualStudio.Component.VC.Tools.x86.x64
