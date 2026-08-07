@@ -1531,7 +1531,7 @@ var quotes=[
 ];
 var qi=0;
 function rotateQuotes(){qi=(qi+1)%quotes.length;['quote-text','lq-text'].forEach(function(id){var el=$(id);if(el)el.textContent=quotes[qi].t});['quote-auth','lq-auth'].forEach(function(id){var el=$(id);if(el)el.textContent=quotes[qi].a})}
-setInterval(rotateQuotes,10000);
+setInterval(rotateQuotes,5000);
 
 // ==================== UTILS ====================
 function $(id){return document.getElementById(id)}
