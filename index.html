@@ -1086,7 +1086,7 @@ window.showAuth = function(tab) {
         <input type="text" id="pc-t" placeholder="Get connected today...">
       </div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-        <input type="text" id="pc-loc" placeholder="📍 Location" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px"><button class="btn btn-outline btn-sm" onclick="getLocation('pc-loc')" title="Get my location">📍</button><input type="text" id="pc-tags" placeholder="#hashtags" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px">
+        <input type="text" id="pc-loc" placeholder="📍 Add location" readonly onclick="getLocation('pc-loc')" title="Tap to get your real location" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px;cursor:pointer"><input type="text" id="pc-tags" placeholder="#hashtags" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px">
       </div>
       <div class="creator-actions">
         <div class="font-picker" id="font-picker">
@@ -1416,7 +1416,7 @@ window.showAuth = function(tab) {
   <div class="cam-preview" id="cam-pr">
     <img id="cam-pi" src="">
     <div class="cam-cap-row">
-      <input type="text" id="cam-cap" placeholder="Write a caption..." style="flex:1"><input type="text" id="cam-loc" placeholder="📍 Location" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px"><button class="btn btn-outline btn-sm" onclick="getLocation('cam-loc')" title="Get my location">📍</button>
+      <input type="text" id="cam-cap" placeholder="Write a caption..." style="flex:1"><input type="text" id="cam-loc" placeholder="📍 Add location" readonly onclick="getLocation('cam-loc')" title="Tap to get your real location" style="flex:1;background:#2A2A2A;border:1px solid #3A3A3A;border-radius:20px;padding:8px 14px;color:#F0F0F0;font-size:13px;cursor:pointer">
       <button class="btn btn-primary btn-sm" onclick="postCam()">Post</button>
       <button class="btn btn-outline btn-sm" onclick="retake()">Retake</button>
     </div>
